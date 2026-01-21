@@ -136,6 +136,40 @@ export function registerSoftwareRoutes(registry: OpenAPIRegistry) {
     responses: {
       200: {
         description: 'Successfully retrieved software title',
+        content: {
+          'application/json': {
+            schema: z.object({
+              software_title: z.object({
+                id: z.number().int().openapi({ description: 'Software title ID' }),
+                name: z.string().openapi({ description: 'Software title name' }),
+                display_name: z.string().openapi({ description: 'Software title display name' }),
+                icon_url: z.string().nullable().openapi({ description: 'URL to the software title icon' }),
+                bundle_identifier: z.string().nullable().openapi({ description: 'Bundle identifier' }),
+                app_store_app: z.string().nullable().openapi({ description: 'App Store app details' }),
+                source: z.string().openapi({ description: 'Source of the software title' }),
+                host_count: z.number().int().openapi({ description: 'Number of hosts with this software installed' }),
+                software_package: FleetSoftwarePackageSchema.extend({
+                  install_script: z.string().nullable().openapi({ description: 'Install script' }),
+                  uninstall_script: z.string().nullable().openapi({ description: 'Uninstall script' }),
+                  pre_install_query: z.string().nullable().openapi({ description: 'Pre-install query' }),
+                  post_install_script: z.string().nullable().openapi({ description: 'Post-install script' }),
+                  self_service: z.boolean().openapi({ description: 'Is self-service enabled' }),
+                  labels_include_any: z.array(z.object({
+                    id: z.number().int().openapi({ description: 'Label ID' }),
+                    name: z.string().openapi({ description: 'Label name' }),
+                  })),
+                  status: z.object({
+                    installed: z.int().openapi({ description: 'Number of installed instances' }),
+                    pending_install: z.int().openapi({ description: 'Number of pending installs' }),
+                    failed_install: z.int().openapi({ description: 'Number of failed installs' }),
+                    pending_uninstall: z.int().openapi({ description: 'Number of pending uninstalls' }),
+                    failed_uninstall: z.int().openapi({ description: 'Number of failed uninstalls' }),
+                  })
+                })
+              })
+            }),
+          },
+        },
       },
     },
   });

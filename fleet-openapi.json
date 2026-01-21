@@ -11827,7 +11827,181 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved software title"
+            "description": "Successfully retrieved software title",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "software_title": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "Software title ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Software title name"
+                        },
+                        "display_name": {
+                          "type": "string",
+                          "description": "Software title display name"
+                        },
+                        "icon_url": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "URL to the software title icon"
+                        },
+                        "bundle_identifier": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Bundle identifier"
+                        },
+                        "app_store_app": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "App Store app details"
+                        },
+                        "source": {
+                          "type": "string",
+                          "description": "Source of the software title"
+                        },
+                        "host_count": {
+                          "type": "integer",
+                          "description": "Number of hosts with this software installed"
+                        },
+                        "software_package": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/FleetSoftwarePackage"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "self_service": {
+                                  "type": "boolean",
+                                  "description": "Is self-service enabled"
+                                },
+                                "install_script": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "Install script"
+                                },
+                                "uninstall_script": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "Uninstall script"
+                                },
+                                "pre_install_query": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "Pre-install query"
+                                },
+                                "post_install_script": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "description": "Post-install script"
+                                },
+                                "labels_include_any": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "integer",
+                                        "description": "Label ID"
+                                      },
+                                      "name": {
+                                        "type": "string",
+                                        "description": "Label name"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "name"
+                                    ]
+                                  }
+                                },
+                                "status": {
+                                  "type": "object",
+                                  "properties": {
+                                    "installed": {
+                                      "type": "integer",
+                                      "description": "Number of installed instances"
+                                    },
+                                    "pending_install": {
+                                      "type": "integer",
+                                      "description": "Number of pending installs"
+                                    },
+                                    "failed_install": {
+                                      "type": "integer",
+                                      "description": "Number of failed installs"
+                                    },
+                                    "pending_uninstall": {
+                                      "type": "integer",
+                                      "description": "Number of pending uninstalls"
+                                    },
+                                    "failed_uninstall": {
+                                      "type": "integer",
+                                      "description": "Number of failed uninstalls"
+                                    }
+                                  },
+                                  "required": [
+                                    "installed",
+                                    "pending_install",
+                                    "failed_install",
+                                    "pending_uninstall",
+                                    "failed_uninstall"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "install_script",
+                                "uninstall_script",
+                                "pre_install_query",
+                                "post_install_script",
+                                "labels_include_any",
+                                "status"
+                              ]
+                            }
+                          ],
+                          "description": "Schema representing a software package managed by Fleet"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "display_name",
+                        "icon_url",
+                        "bundle_identifier",
+                        "app_store_app",
+                        "source",
+                        "host_count",
+                        "software_package"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "software_title"
+                  ]
+                }
+              }
+            }
           }
         }
       }
