@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+*.log
+.env
+.DS_Store
+openapi.json
+openapi.yaml
+__generated__
