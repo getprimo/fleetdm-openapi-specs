@@ -39,7 +39,7 @@ function normalizeType(raw: string): DocParam['type'] {
 }
 
 function clean(cell: string): string {
-  return (cell || '').replace(/`/g, '').replace(/\s+/g, ' ').trim();
+  return (cell || '').replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
 }
 
 function cleanName(cell: string): string {
