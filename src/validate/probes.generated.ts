@@ -1181,7 +1181,7 @@ export const PROBES: Probe[] = [
     "params": {
       "id": {
         "from": "software-titles",
-        "pick": "titles.*.id"
+        "pick": "software_titles.*.id"
       }
     }
   },
@@ -1196,7 +1196,7 @@ export const PROBES: Probe[] = [
     "params": {
       "id": {
         "from": "software-titles",
-        "pick": "titles.*.id"
+        "pick": "software_titles.*.id"
       }
     }
   },
@@ -1211,7 +1211,7 @@ export const PROBES: Probe[] = [
     "params": {
       "id": {
         "from": "software-titles",
-        "pick": "titles.*.id"
+        "pick": "software_titles.*.id"
       }
     }
   },
@@ -1235,7 +1235,7 @@ export const PROBES: Probe[] = [
     "params": {
       "id": {
         "from": "software-versions",
-        "pick": "versions.*.id"
+        "pick": "software_versions.*.id"
       }
     }
   },

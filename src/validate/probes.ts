@@ -56,4 +56,10 @@ export const OVERRIDES: ProbeOverride[] = [
     responseName: 'HostsByIdResponse',
     params: { identifier: { from: 'hosts', pick: 'hosts.*.uuid' } },
   },
+  // The software lists key their arrays `software_titles` / `software_versions`,
+  // not the bare path segment the heuristic guesses.
+  { specPath: '/api/v1/fleet/software/titles/{id}', params: { id: { from: 'software-titles', pick: 'software_titles.*.id' } } },
+  { specPath: '/api/v1/fleet/software/titles/{id}/icon', params: { id: { from: 'software-titles', pick: 'software_titles.*.id' } } },
+  { specPath: '/api/v1/fleet/software/titles/{id}/package', params: { id: { from: 'software-titles', pick: 'software_titles.*.id' } } },
+  { specPath: '/api/v1/fleet/software/versions/{id}', params: { id: { from: 'software-versions', pick: 'software_versions.*.id' } } },
 ];

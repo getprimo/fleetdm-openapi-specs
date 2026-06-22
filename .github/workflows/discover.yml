@@ -1,0 +1,35 @@
+name: Discover endpoints
+
+# Regenerate the probe list from Fleet's rest-api.md and open a PR if the set of
+# endpoints changed. Docs only — no live API, no secrets. Runs before Sync so a
+# refreshed probe list can land first.
+
+on:
+  schedule:
+    - cron: '0 5 * * 1' # Mondays 05:00 UTC
+  workflow_dispatch:
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run discover
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: spec/discover
+          title: 'chore(probes): sync endpoint list from Fleet docs'
+          commit-message: 'chore(probes): sync endpoint list from Fleet docs'
+          body: |
+            Automated update: GET endpoints re-discovered from Fleet's rest-api.md.
+            Review the probe list in `src/validate/probes.generated.ts`; merge to
+            let the next live sync cover any new endpoints.
+          labels: spec-discover

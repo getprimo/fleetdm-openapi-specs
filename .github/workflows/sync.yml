@@ -1,0 +1,39 @@
+name: Sync spec
+
+# Re-infer endpoint schemas from the live Fleet API and open a PR if the spec
+# drifted. Probes come from src/validate/probes.generated.ts (see Discover).
+#
+# Required secrets: FLEET_URL, FLEET_TOKEN (FLEET_API_VERSION optional, default "latest").
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      FLEET_URL: ${{ secrets.FLEET_URL }}
+      FLEET_TOKEN: ${{ secrets.FLEET_TOKEN }}
+      FLEET_API_VERSION: ${{ secrets.FLEET_API_VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run validate -- --write
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: spec/live-sync
+          title: 'chore(spec): sync schemas from live Fleet API'
+          commit-message: 'chore(spec): sync schemas from live Fleet API'
+          body: |
+            Automated update: response schemas re-inferred from the live Fleet
+            API. Review the diff in `fleet-openapi.json` before merging.
+          labels: spec-sync

@@ -86,15 +86,17 @@ JSON, are skipped — the spec only ever contains what answered with a 200.
 
 ## Autonomy (CI)
 
-`.github/workflows/spec-autonomy.yml`:
+Three workflows under `.github/workflows/`:
 
-- **`check`** — on pull requests, fails if the live API has drifted from the
-  committed spec.
-- **`sync`** — on a weekly schedule (and manual dispatch), regenerates the spec
-  from live and opens a PR if anything changed.
+- **`discover.yml`** — weekly (+ manual): regenerates the probe list from Fleet's
+  docs and opens a PR if the set of endpoints changed. Docs only, no secrets.
+- **`sync.yml`** — weekly (+ manual): re-infers the spec from the live API and
+  opens a PR if anything drifted.
+- **`check.yml`** — on pull requests: fails if the live API no longer conforms to
+  the committed spec (skips the bot's own branches).
 
 Set `FLEET_URL` and `FLEET_TOKEN` as repository secrets (Settings → Secrets →
-Actions).
+Actions). `discover` needs neither.
 
 ## Limitations & roadmap
 

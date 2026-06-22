@@ -1,0 +1,28 @@
+name: Check
+
+# Gate on pull requests: fail if the live Fleet response no longer conforms to
+# the committed spec. Skips the bot's own automated branches (their content is
+# generated from live/docs and conforms by construction).
+#
+# Required secrets: FLEET_URL, FLEET_TOKEN (FLEET_API_VERSION optional, default "latest").
+
+on:
+  pull_request:
+    paths: ['fleet-openapi.json', 'src/validate/**']
+
+jobs:
+  check:
+    if: github.head_ref != 'spec/live-sync' && github.head_ref != 'spec/discover'
+    runs-on: ubuntu-latest
+    env:
+      FLEET_URL: ${{ secrets.FLEET_URL }}
+      FLEET_TOKEN: ${{ secrets.FLEET_TOKEN }}
+      FLEET_API_VERSION: ${{ secrets.FLEET_API_VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run validate

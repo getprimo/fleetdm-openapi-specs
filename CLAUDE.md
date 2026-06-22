@@ -21,7 +21,7 @@ schemas. See `README.md` for the full vision.
 - `src/validate/infer.ts` - JSON Schema inference from live responses (merges samples)
 - `src/validate/run.ts` - Generator + checker (`--write` regenerates the spec)
 - `fleet-openapi.json` - Generated spec artifact (only contains endpoints that answered 200)
-- `.github/workflows/spec-autonomy.yml` - CI: discover + sync auto-PRs on schedule, gate on PRs
+- `.github/workflows/{discover,sync,check}.yml` - CI: discover + sync auto-PRs on schedule, gate on PRs
 
 ## Conventions
 
