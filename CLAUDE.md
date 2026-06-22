@@ -6,18 +6,22 @@ schemas. See `README.md` for the full vision.
 
 ## Commands
 
+- `npm run discover` - Regenerate the probe list from Fleet's `rest-api.md` (docs only, no secrets)
 - `npm run validate` - Check live API responses against the committed spec (exit 1 on drift)
-- `npm run validate:write` - Regenerate `fleet-openapi.json` from the manifest + live responses
+- `npm run validate:write` - Regenerate `fleet-openapi.json` from the probes + live responses
 
-Both require `FLEET_URL` and `FLEET_TOKEN` (see `.env.example`).
+`validate`/`validate:write` require `FLEET_URL` and `FLEET_TOKEN` (see `.env.example`); `discover` does not.
 
 ## Project Structure
 
-- `src/validate/probes.ts` - The manifest: GET endpoints to cover (source of structure)
+- `src/validate/docs.ts` - Fetch + parse Fleet's `rest-api.md` (endpoint discovery, parameter tables)
+- `src/validate/discover.ts` - Generate the probe list from the docs → `probes.generated.ts`
+- `src/validate/probes.generated.ts` - AUTO-GENERATED probe list (do not hand-edit; run `npm run discover`)
+- `src/validate/probes.ts` - Manual OVERRIDES + probe types (the only hand-maintained probe file)
 - `src/validate/infer.ts` - JSON Schema inference from live responses (merges samples)
 - `src/validate/run.ts` - Generator + checker (`--write` regenerates the spec)
-- `fleet-openapi.json` - Generated spec artifact (starts empty, grows as probes are added)
-- `.github/workflows/spec-autonomy.yml` - CI: gate on PRs, sync + auto-PR on schedule
+- `fleet-openapi.json` - Generated spec artifact (only contains endpoints that answered 200)
+- `.github/workflows/spec-autonomy.yml` - CI: discover + sync auto-PRs on schedule, gate on PRs
 
 ## Conventions
 

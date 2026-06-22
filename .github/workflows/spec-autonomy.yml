@@ -24,9 +24,12 @@ env:
 jobs:
   # Gate: on PRs, fail if the live response no longer matches the committed spec.
   check:
-    # The bot's own sync PR is generated from live and conforms by construction;
+    # The bot's own automated PRs are generated from live/docs by construction;
     # only gate human edits to the spec.
-    if: github.event_name == 'pull_request' && github.head_ref != 'spec/live-sync'
+    if: >-
+      github.event_name == 'pull_request'
+      && github.head_ref != 'spec/live-sync'
+      && github.head_ref != 'spec/discover'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,6 +39,33 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run validate
+
+  # Discover: on schedule/manual, regenerate the probe list from Fleet's docs
+  # and open a PR if the set of endpoints changed. No live API / secrets needed.
+  discover:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run discover
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: spec/discover
+          title: 'chore(probes): sync endpoint list from Fleet docs'
+          commit-message: 'chore(probes): sync endpoint list from Fleet docs'
+          body: |
+            Automated update: GET endpoints re-discovered from Fleet's rest-api.md.
+            Review the probe list in `src/validate/probes.generated.ts`; merge to
+            let the next live sync cover any new endpoints.
+          labels: spec-discover
 
   # Sync: on schedule/manual, re-infer from live and open a PR if anything changed.
   sync:

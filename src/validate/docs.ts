@@ -24,6 +24,55 @@ export async function fetchDocs(): Promise<string> {
   return res.text();
 }
 
+export interface Endpoint {
+  method: string;
+  /** Canonical path with `{param}` placeholders (the doc's `:param` form is converted). */
+  path: string;
+  /** Nearest `###` heading above the endpoint — a human title. */
+  summary: string;
+  /** Nearest `##` heading above the endpoint — the resource group. */
+  tags: string[];
+}
+
+/**
+ * Extract every documented endpoint from rest-api.md by scanning for
+ * `METHOD /api/v1/fleet/...` lines, tagging each with the section headings it
+ * sits under. The single source of endpoint discovery.
+ */
+export function discoverEndpoints(md: string): Endpoint[] {
+  const lines = md.split('\n');
+  const seen = new Set<string>();
+  const out: Endpoint[] = [];
+  let h2 = '';
+  let h3 = '';
+  const epLine = /\b(GET|POST|PUT|PATCH|DELETE)\s+`?(\/api\/v1\/fleet\/[\w/:{}.\-]*)/;
+
+  for (const line of lines) {
+    const heading = line.match(/^(#{2,3})\s+(.+?)\s*$/);
+    if (heading) {
+      const text = clean(heading[2]);
+      if (heading[1] === '##') {
+        h2 = text;
+        h3 = '';
+      } else {
+        h3 = text;
+      }
+      continue;
+    }
+    const m = line.match(epLine);
+    if (!m) continue;
+    const method = m[1];
+    const path = m[2].replace(/:([A-Za-z_]\w*)/g, '{$1}').replace(/[./]+$/, '');
+    // Drop example invocations with literal ids (e.g. /carves/1); real endpoints use {param}.
+    if (path.split('/').some((s) => /^\d+$/.test(s))) continue;
+    const key = `${method} ${path}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ method, path, summary: h3 || h2 || path, tags: h2 ? [h2] : [] });
+  }
+  return out;
+}
+
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

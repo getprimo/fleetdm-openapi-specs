@@ -1,21 +1,10 @@
 /**
- * The manifest: GET-only, read-only probes run against a live Fleet instance.
+ * Probe types + manual OVERRIDES.
  *
- * This list is the single source of structure. The whole OpenAPI spec
- * (paths, parameters and response components) is *generated* from these
- * entries plus the shapes inferred from live responses — nothing is hand
- * maintained in fleet-openapi.json.
- *
- * Paths are written canonically as `/api/v1/...`; the runner rewrites the
- * version segment to FLEET_API_VERSION for the live call.
- *
- * Path parameters are resolved by chaining: a probe declares where each
- * `{param}` comes from — value(s) picked out of another probe's live response.
- * The runner fetches dependencies first, so `/hosts/{id}` is driven by real ids
- * taken from the `/hosts` list. A `*` segment fans out: `hosts.*.id` yields every
- * host id, the probe is sampled against each, and the responses are merged into
- * one schema — so per-object nullability/optionality is captured rather than
- * guessed from a single response. Add an endpoint by appending one entry here.
+ * The probe list itself is generated from Fleet's docs — see discover.ts, which
+ * writes probes.generated.ts. This file holds only the things discovery can't
+ * infer: query params to send, chaining the heuristic gets wrong, and endpoints
+ * to add or drop.
  */
 export interface ParamSource {
   /** Name of the probe whose response supplies the value. */
@@ -43,49 +32,28 @@ export interface Probe {
   query?: Record<string, string | number | boolean>;
 }
 
-export const PROBES: Probe[] = [
+/**
+ * A patch applied to the discovered probe with the same `specPath`:
+ *  - `skip: true`  → drop the endpoint
+ *  - matching path → shallow-merge the given fields onto the discovered probe
+ *  - no match      → add it as a brand-new probe (must be a complete Probe)
+ */
+export type ProbeOverride = Partial<Probe> & { specPath: string; skip?: boolean };
+
+export const OVERRIDES: ProbeOverride[] = [
+  // Keep payloads small and exercise pagination params on list endpoints.
+  { specPath: '/api/v1/fleet/hosts', query: { per_page: 5 } },
+  { specPath: '/api/v1/fleet/hosts/{id}/software', query: { per_page: 5 } },
+  { specPath: '/api/v1/fleet/hosts/{id}/activities', query: { per_page: 5 } },
+  // The heuristic can't chain `identifier` (no /hosts/identifier collection);
+  // source it from a host's uuid in the /hosts list.
   {
-    name: 'list-hosts',
-    method: 'get',
-    specPath: '/api/v1/fleet/hosts',
-    summary: 'List hosts',
-    tags: ['Hosts'],
-    query: { per_page: 5 },
-  },
-  {
-    name: 'get-host',
-    method: 'get',
-    specPath: '/api/v1/fleet/hosts/{id}',
-    summary: 'Get host by id',
-    tags: ['Hosts'],
-    responseName: 'GetHostResponse',
-    params: { id: { from: 'list-hosts', pick: 'hosts.*.id' } },
-  },
-  {
-    name: 'get-host-by-identifier',
+    name: 'hosts-identifier-by-identifier',
     method: 'get',
     specPath: '/api/v1/fleet/hosts/identifier/{identifier}',
     summary: 'Get host by identifier',
     tags: ['Hosts'],
-    responseName: 'GetHostResponse',
-    params: { identifier: { from: 'list-hosts', pick: 'hosts.*.uuid' } },
-  },
-  {
-    name: 'host-software',
-    method: 'get',
-    specPath: '/api/v1/fleet/hosts/{id}/software',
-    summary: 'List software installed on a host',
-    tags: ['Software'],
-    params: { id: { from: 'list-hosts', pick: 'hosts.*.id' } },
-    query: { per_page: 5 },
-  },
-  {
-    name: 'host-activities',
-    method: 'get',
-    specPath: '/api/v1/fleet/hosts/{id}/activities',
-    summary: 'List activities for a host',
-    tags: ['Activities'],
-    params: { id: { from: 'list-hosts', pick: 'hosts.*.id' } },
-    query: { per_page: 5 },
+    responseName: 'HostsByIdResponse',
+    params: { identifier: { from: 'hosts', pick: 'hosts.*.uuid' } },
   },
 ];

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Autonomous OpenAPI 3.1 spec for the Fleet REST API, generated and kept honest from live API responses",
   "scripts": {
+    "discover": "tsx src/validate/discover.ts",
     "validate": "tsx src/validate/run.ts",
     "validate:write": "tsx src/validate/run.ts --write"
   },

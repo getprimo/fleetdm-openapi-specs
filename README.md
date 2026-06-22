@@ -55,26 +55,34 @@ Copy `.env.example` to `.env` for local runs.
 
 ```bash
 npm install
+npm run discover          # regenerate the probe list from Fleet's docs
 npm run validate          # check live responses against the committed spec
 npm run validate:write    # regenerate fleet-openapi.json from live
 ```
 
-## Adding an endpoint
+## How endpoints are added
 
-Append one entry to `src/validate/probes.ts`. For a top-level collection:
+The probe list is **discovered automatically**. `npm run discover` parses every
+`GET` endpoint out of Fleet's `rest-api.md`, derives path-parameter chaining by a
+heuristic (a `{p}` is sourced from the collection ending just before its segment,
+`<collection>.*.<field>`), and writes the result to
+`src/validate/probes.generated.ts` (committed, so the list is reviewable in PRs).
+
+`src/validate/probes.ts` holds only manual **overrides** — query params to send,
+chaining the heuristic gets wrong, and endpoints to add or drop:
 
 ```ts
-{ name: 'list-teams', method: 'get', specPath: '/api/v1/fleet/teams',
-  summary: 'List teams', tags: ['Teams'] }
+export const OVERRIDES: ProbeOverride[] = [
+  { specPath: '/api/v1/fleet/hosts', query: { per_page: 5 } },        // send a param
+  { specPath: '/api/v1/fleet/hosts/identifier/{identifier}',          // fix chaining
+    name: 'hosts-identifier-by-identifier', method: 'get',
+    summary: 'Get host by identifier', tags: ['Hosts'],
+    params: { identifier: { from: 'hosts', pick: 'hosts.*.uuid' } } },
+];
 ```
 
-For a parameterized endpoint, declare where the path parameter comes from:
-
-```ts
-{ name: 'get-team', method: 'get', specPath: '/api/v1/fleet/teams/{id}',
-  summary: 'Get team', tags: ['Teams'],
-  params: { id: { from: 'list-teams', pick: 'teams.0.id' } } }
-```
+Endpoints whose params the heuristic can't resolve, or that 404 / don't return
+JSON, are skipped — the spec only ever contains what answered with a 200.
 
 ## Autonomy (CI)
 

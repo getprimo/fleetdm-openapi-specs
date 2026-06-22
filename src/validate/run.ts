@@ -21,7 +21,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
-import { PROBES, type Probe } from './probes';
+import { type Probe } from './probes';
+import { PROBES } from './probes.generated';
 import { infer } from './infer';
 import { fetchDocs, extractParams, type DocParam } from './docs';
 
@@ -194,8 +195,15 @@ async function main(): Promise<void> {
       const url = new URL(base!.replace(/\/$/, '') + livePath);
       for (const [k, v] of Object.entries(probe.query ?? {})) url.searchParams.set(k, String(v));
       const res = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` } });
-      if (res.ok) bodies.push(await res.json());
-      else lastHttp = res.status;
+      if (!res.ok) {
+        lastHttp = res.status;
+        continue;
+      }
+      try {
+        bodies.push(await res.json());
+      } catch {
+        // Non-JSON response (CSV/binary export, etc.) — not a schema we model.
+      }
     }
     if (!bodies.length) return store(probe, { ok: false, httpStatus: lastHttp });
     return store(probe, { ok: true, bodies });
