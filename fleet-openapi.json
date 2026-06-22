@@ -16,7 +16,10 @@
       "variables": {
         "protocol": {
           "default": "https",
-          "enum": ["https", "http"]
+          "enum": [
+            "https",
+            "http"
+          ]
         },
         "host": {
           "default": "api.fleetdm.com"
@@ -38,7 +41,1239 @@
         "description": "API token authentication. Get your token from My Account > Get API token in the Fleet UI."
       }
     },
-    "schemas": {}
+    "schemas": {
+      "ListHostsResponse": {
+        "type": "object",
+        "properties": {
+          "hosts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "software": {
+                  "type": "null"
+                },
+                "software_updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "detail_updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "label_updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "policy_updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "last_enrolled_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "seen_time": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "refetch_requested": {
+                  "type": "boolean"
+                },
+                "hostname": {
+                  "type": "string"
+                },
+                "uuid": {
+                  "type": "string"
+                },
+                "platform": {
+                  "type": "string"
+                },
+                "osquery_version": {
+                  "type": "string"
+                },
+                "orbit_version": {
+                  "type": "null"
+                },
+                "fleet_desktop_version": {
+                  "type": "null"
+                },
+                "scripts_enabled": {
+                  "type": "null"
+                },
+                "os_version": {
+                  "type": "string"
+                },
+                "build": {
+                  "type": "string"
+                },
+                "platform_like": {
+                  "type": "string"
+                },
+                "code_name": {
+                  "type": "string"
+                },
+                "uptime": {
+                  "type": "integer"
+                },
+                "memory": {
+                  "type": "integer"
+                },
+                "cpu_type": {
+                  "type": "string"
+                },
+                "cpu_subtype": {
+                  "type": "string"
+                },
+                "cpu_brand": {
+                  "type": "string"
+                },
+                "cpu_physical_cores": {
+                  "type": "integer"
+                },
+                "cpu_logical_cores": {
+                  "type": "integer"
+                },
+                "hardware_vendor": {
+                  "type": "string"
+                },
+                "hardware_model": {
+                  "type": "string"
+                },
+                "hardware_version": {
+                  "type": "string"
+                },
+                "hardware_serial": {
+                  "type": "string"
+                },
+                "computer_name": {
+                  "type": "string"
+                },
+                "timezone": {
+                  "type": "null"
+                },
+                "public_ip": {
+                  "type": "string"
+                },
+                "primary_ip": {
+                  "type": "string"
+                },
+                "primary_mac": {
+                  "type": "string"
+                },
+                "distributed_interval": {
+                  "type": "integer"
+                },
+                "config_tls_refresh": {
+                  "type": "integer"
+                },
+                "logger_tls_period": {
+                  "type": "integer"
+                },
+                "team_id": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "pack_stats": {
+                  "type": "null"
+                },
+                "team_name": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "gigs_disk_space_available": {
+                  "type": "number"
+                },
+                "percent_disk_space_available": {
+                  "type": "number"
+                },
+                "gigs_total_disk_space": {
+                  "type": "number"
+                },
+                "gigs_all_disk_space": {
+                  "type": "null"
+                },
+                "issues": {
+                  "type": "object",
+                  "properties": {
+                    "failing_policies_count": {
+                      "type": "integer"
+                    },
+                    "critical_vulnerabilities_count": {
+                      "type": "integer"
+                    },
+                    "total_issues_count": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "critical_vulnerabilities_count",
+                    "failing_policies_count",
+                    "total_issues_count"
+                  ]
+                },
+                "mdm": {
+                  "type": "object",
+                  "properties": {
+                    "enrollment_status": {
+                      "type": "string"
+                    },
+                    "dep_profile_error": {
+                      "type": "boolean"
+                    },
+                    "server_url": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "encryption_key_available": {
+                      "type": "boolean"
+                    },
+                    "connected_to_fleet": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "connected_to_fleet",
+                    "dep_profile_error",
+                    "encryption_key_available",
+                    "enrollment_status",
+                    "name",
+                    "server_url"
+                  ]
+                },
+                "refetch_critical_queries_until": {
+                  "type": "null"
+                },
+                "last_restarted_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "display_text": {
+                  "type": "string"
+                },
+                "display_name": {
+                  "type": "string"
+                },
+                "fleet_id": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "fleet_name": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                }
+              },
+              "required": [
+                "build",
+                "code_name",
+                "computer_name",
+                "config_tls_refresh",
+                "cpu_brand",
+                "cpu_logical_cores",
+                "cpu_physical_cores",
+                "cpu_subtype",
+                "cpu_type",
+                "created_at",
+                "detail_updated_at",
+                "display_name",
+                "display_text",
+                "distributed_interval",
+                "fleet_desktop_version",
+                "fleet_id",
+                "fleet_name",
+                "gigs_all_disk_space",
+                "gigs_disk_space_available",
+                "gigs_total_disk_space",
+                "hardware_model",
+                "hardware_serial",
+                "hardware_vendor",
+                "hardware_version",
+                "hostname",
+                "id",
+                "issues",
+                "label_updated_at",
+                "last_enrolled_at",
+                "last_restarted_at",
+                "logger_tls_period",
+                "mdm",
+                "memory",
+                "orbit_version",
+                "os_version",
+                "osquery_version",
+                "pack_stats",
+                "percent_disk_space_available",
+                "platform",
+                "platform_like",
+                "policy_updated_at",
+                "primary_ip",
+                "primary_mac",
+                "public_ip",
+                "refetch_critical_queries_until",
+                "refetch_requested",
+                "scripts_enabled",
+                "seen_time",
+                "software",
+                "software_updated_at",
+                "status",
+                "team_id",
+                "team_name",
+                "timezone",
+                "updated_at",
+                "uptime",
+                "uuid"
+              ]
+            }
+          }
+        },
+        "required": [
+          "hosts"
+        ]
+      },
+      "GetHostResponse": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "software": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "bundle_identifier": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "extension_for": {
+                      "type": "string"
+                    },
+                    "browser": {
+                      "type": "string"
+                    },
+                    "generated_cpe": {
+                      "type": "string"
+                    },
+                    "vulnerabilities": {
+                      "type": "null"
+                    },
+                    "display_name": {
+                      "type": "string"
+                    },
+                    "last_opened_at": {
+                      "type": "string"
+                    },
+                    "installed_paths": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "signature_information": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "installed_path": {
+                            "type": "string"
+                          },
+                          "team_identifier": {
+                            "type": "string"
+                          },
+                          "hash_sha256": {
+                            "type": [
+                              "null",
+                              "string"
+                            ]
+                          },
+                          "executable_sha256": {
+                            "type": "null"
+                          },
+                          "executable_path": {
+                            "type": "null"
+                          }
+                        },
+                        "required": [
+                          "executable_path",
+                          "executable_sha256",
+                          "hash_sha256",
+                          "installed_path",
+                          "team_identifier"
+                        ]
+                      }
+                    },
+                    "extension_id": {
+                      "type": "string"
+                    },
+                    "vendor": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "browser",
+                    "display_name",
+                    "extension_for",
+                    "generated_cpe",
+                    "id",
+                    "installed_paths",
+                    "name",
+                    "signature_information",
+                    "source",
+                    "version",
+                    "vulnerabilities"
+                  ]
+                }
+              },
+              "software_updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "detail_updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "label_updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "policy_updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "last_enrolled_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "seen_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "refetch_requested": {
+                "type": "boolean"
+              },
+              "hostname": {
+                "type": "string"
+              },
+              "uuid": {
+                "type": "string"
+              },
+              "platform": {
+                "type": "string"
+              },
+              "osquery_version": {
+                "type": "string"
+              },
+              "orbit_version": {
+                "type": "null"
+              },
+              "fleet_desktop_version": {
+                "type": "null"
+              },
+              "scripts_enabled": {
+                "type": "null"
+              },
+              "os_version": {
+                "type": "string"
+              },
+              "build": {
+                "type": "string"
+              },
+              "platform_like": {
+                "type": "string"
+              },
+              "code_name": {
+                "type": "string"
+              },
+              "uptime": {
+                "type": "integer"
+              },
+              "memory": {
+                "type": "integer"
+              },
+              "cpu_type": {
+                "type": "string"
+              },
+              "cpu_subtype": {
+                "type": "string"
+              },
+              "cpu_brand": {
+                "type": "string"
+              },
+              "cpu_physical_cores": {
+                "type": "integer"
+              },
+              "cpu_logical_cores": {
+                "type": "integer"
+              },
+              "hardware_vendor": {
+                "type": "string"
+              },
+              "hardware_model": {
+                "type": "string"
+              },
+              "hardware_version": {
+                "type": "string"
+              },
+              "hardware_serial": {
+                "type": "string"
+              },
+              "computer_name": {
+                "type": "string"
+              },
+              "timezone": {
+                "type": "null"
+              },
+              "public_ip": {
+                "type": "string"
+              },
+              "primary_ip": {
+                "type": "string"
+              },
+              "primary_mac": {
+                "type": "string"
+              },
+              "distributed_interval": {
+                "type": "integer"
+              },
+              "config_tls_refresh": {
+                "type": "integer"
+              },
+              "logger_tls_period": {
+                "type": "integer"
+              },
+              "team_id": {
+                "type": "integer"
+              },
+              "pack_stats": {
+                "type": "null"
+              },
+              "team_name": {
+                "type": "string"
+              },
+              "gigs_disk_space_available": {
+                "type": "number"
+              },
+              "percent_disk_space_available": {
+                "type": "number"
+              },
+              "gigs_total_disk_space": {
+                "type": "number"
+              },
+              "gigs_all_disk_space": {
+                "type": "null"
+              },
+              "issues": {
+                "type": "object",
+                "properties": {
+                  "failing_policies_count": {
+                    "type": "integer"
+                  },
+                  "total_issues_count": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "failing_policies_count",
+                  "total_issues_count"
+                ]
+              },
+              "mdm": {
+                "type": "object",
+                "properties": {
+                  "enrollment_status": {
+                    "type": "string"
+                  },
+                  "dep_profile_error": {
+                    "type": "boolean"
+                  },
+                  "server_url": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "encryption_key_available": {
+                    "type": "boolean"
+                  },
+                  "encryption_key_archived": {
+                    "type": "boolean"
+                  },
+                  "os_settings": {
+                    "type": "object",
+                    "properties": {
+                      "disk_encryption": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "null"
+                          },
+                          "detail": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "detail",
+                          "status"
+                        ]
+                      },
+                      "recovery_lock_password": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "null"
+                          },
+                          "detail": {
+                            "type": "string"
+                          },
+                          "password_available": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "detail",
+                          "password_available",
+                          "status"
+                        ]
+                      },
+                      "managed_local_account": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "null"
+                          },
+                          "password_available": {
+                            "type": "boolean"
+                          },
+                          "auto_rotate_at": {
+                            "type": "null"
+                          },
+                          "pending_rotation": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "auto_rotate_at",
+                          "password_available",
+                          "pending_rotation",
+                          "status"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "disk_encryption",
+                      "managed_local_account",
+                      "recovery_lock_password"
+                    ]
+                  },
+                  "profiles": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "profile_uuid": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "operation_type": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "string"
+                        },
+                        "platform": {
+                          "type": "string"
+                        },
+                        "scope": {
+                          "type": "string"
+                        },
+                        "managed_local_account": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "detail",
+                        "managed_local_account",
+                        "name",
+                        "operation_type",
+                        "platform",
+                        "profile_uuid",
+                        "scope",
+                        "status"
+                      ]
+                    }
+                  },
+                  "macos_settings": {
+                    "type": "object",
+                    "properties": {
+                      "disk_encryption": {
+                        "type": "null"
+                      },
+                      "action_required": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "action_required",
+                      "disk_encryption"
+                    ]
+                  },
+                  "macos_setup": {
+                    "type": "object",
+                    "properties": {
+                      "bootstrap_package_status": {
+                        "type": "string"
+                      },
+                      "detail": {
+                        "type": "string"
+                      },
+                      "bootstrap_package_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "bootstrap_package_name",
+                      "bootstrap_package_status",
+                      "detail"
+                    ]
+                  },
+                  "device_status": {
+                    "type": "string"
+                  },
+                  "pending_action": {
+                    "type": "string"
+                  },
+                  "connected_to_fleet": {
+                    "type": "boolean"
+                  },
+                  "apple_settings": {
+                    "type": "object",
+                    "properties": {
+                      "disk_encryption": {
+                        "type": "null"
+                      },
+                      "action_required": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "action_required",
+                      "disk_encryption"
+                    ]
+                  },
+                  "setup_experience": {
+                    "type": "object",
+                    "properties": {
+                      "bootstrap_package_status": {
+                        "type": "string"
+                      },
+                      "detail": {
+                        "type": "string"
+                      },
+                      "bootstrap_package_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "bootstrap_package_name",
+                      "bootstrap_package_status",
+                      "detail"
+                    ]
+                  }
+                },
+                "required": [
+                  "apple_settings",
+                  "connected_to_fleet",
+                  "dep_profile_error",
+                  "device_status",
+                  "encryption_key_archived",
+                  "encryption_key_available",
+                  "enrollment_status",
+                  "macos_settings",
+                  "macos_setup",
+                  "name",
+                  "os_settings",
+                  "pending_action",
+                  "profiles",
+                  "server_url",
+                  "setup_experience"
+                ]
+              },
+              "refetch_critical_queries_until": {
+                "type": "null"
+              },
+              "last_restarted_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "policies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "critical": {
+                      "type": "boolean"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "author_id": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "author_name": {
+                      "type": "string"
+                    },
+                    "author_email": {
+                      "type": "string"
+                    },
+                    "team_id": {
+                      "type": "null"
+                    },
+                    "resolution": {
+                      "type": "string"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "calendar_events_enabled": {
+                      "type": "boolean"
+                    },
+                    "conditional_access_enabled": {
+                      "type": "boolean"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "response": {
+                      "type": "string"
+                    },
+                    "fleet_id": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "author_email",
+                    "author_id",
+                    "author_name",
+                    "calendar_events_enabled",
+                    "conditional_access_enabled",
+                    "created_at",
+                    "critical",
+                    "description",
+                    "fleet_id",
+                    "id",
+                    "name",
+                    "platform",
+                    "query",
+                    "resolution",
+                    "response",
+                    "team_id",
+                    "type",
+                    "updated_at"
+                  ]
+                }
+              },
+              "labels": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "id": {
+                      "type": "integer"
+                    },
+                    "author_id": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "label_type": {
+                      "type": "string"
+                    },
+                    "label_membership_type": {
+                      "type": "string"
+                    },
+                    "team_id": {
+                      "type": "null"
+                    },
+                    "fleet_id": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "author_id",
+                    "created_at",
+                    "description",
+                    "fleet_id",
+                    "id",
+                    "label_membership_type",
+                    "label_type",
+                    "name",
+                    "platform",
+                    "query",
+                    "team_id",
+                    "updated_at"
+                  ]
+                }
+              },
+              "packs": {
+                "type": "array"
+              },
+              "batteries": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "cycle_count": {
+                      "type": "integer"
+                    },
+                    "health": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "cycle_count",
+                    "health"
+                  ]
+                }
+              },
+              "end_users": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "idp_username": {
+                      "type": "string"
+                    },
+                    "idp_info_updated_at": {
+                      "type": "null"
+                    },
+                    "other_emails": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "email",
+                          "source"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "idp_info_updated_at",
+                    "idp_username",
+                    "other_emails"
+                  ]
+                }
+              },
+              "last_mdm_enrolled_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "last_mdm_checked_in_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mdm_enrollment_hardware_attested": {
+                "type": "boolean"
+              },
+              "conditional_access_bypassed": {
+                "type": "boolean"
+              },
+              "status": {
+                "type": "string"
+              },
+              "display_text": {
+                "type": "string"
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "fleet_id": {
+                "type": "integer"
+              },
+              "fleet_name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "batteries",
+              "build",
+              "code_name",
+              "computer_name",
+              "conditional_access_bypassed",
+              "config_tls_refresh",
+              "cpu_brand",
+              "cpu_logical_cores",
+              "cpu_physical_cores",
+              "cpu_subtype",
+              "cpu_type",
+              "created_at",
+              "detail_updated_at",
+              "display_name",
+              "display_text",
+              "distributed_interval",
+              "end_users",
+              "fleet_desktop_version",
+              "fleet_id",
+              "fleet_name",
+              "gigs_all_disk_space",
+              "gigs_disk_space_available",
+              "gigs_total_disk_space",
+              "hardware_model",
+              "hardware_serial",
+              "hardware_vendor",
+              "hardware_version",
+              "hostname",
+              "id",
+              "issues",
+              "label_updated_at",
+              "labels",
+              "last_enrolled_at",
+              "last_mdm_checked_in_at",
+              "last_mdm_enrolled_at",
+              "last_restarted_at",
+              "logger_tls_period",
+              "mdm",
+              "mdm_enrollment_hardware_attested",
+              "memory",
+              "orbit_version",
+              "os_version",
+              "osquery_version",
+              "pack_stats",
+              "packs",
+              "percent_disk_space_available",
+              "platform",
+              "platform_like",
+              "policies",
+              "policy_updated_at",
+              "primary_ip",
+              "primary_mac",
+              "public_ip",
+              "refetch_critical_queries_until",
+              "refetch_requested",
+              "scripts_enabled",
+              "seen_time",
+              "software",
+              "software_updated_at",
+              "status",
+              "team_id",
+              "team_name",
+              "timezone",
+              "updated_at",
+              "uptime",
+              "uuid"
+            ]
+          }
+        },
+        "required": [
+          "host"
+        ]
+      }
+    }
   },
-  "paths": {}
+  "paths": {
+    "/api/v1/fleet/hosts": {
+      "get": {
+        "tags": [
+          "Hosts"
+        ],
+        "summary": "List hosts",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListHostsResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/fleet/hosts/{id}": {
+      "get": {
+        "tags": [
+          "Hosts"
+        ],
+        "summary": "Get host by id",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetHostResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/fleet/hosts/identifier/{identifier}": {
+      "get": {
+        "tags": [
+          "Hosts"
+        ],
+        "summary": "Get host by identifier",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetHostResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  }
 }
