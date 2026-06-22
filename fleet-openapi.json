@@ -1713,13 +1713,306 @@
           "hosts": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Host"
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "software": {
+                  "type": "null"
+                },
+                "software_updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "detail_updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "label_updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "policy_updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "last_enrolled_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "seen_time": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "refetch_requested": {
+                  "type": "boolean"
+                },
+                "hostname": {
+                  "type": "string"
+                },
+                "uuid": {
+                  "type": "string"
+                },
+                "platform": {
+                  "type": "string"
+                },
+                "osquery_version": {
+                  "type": "string"
+                },
+                "orbit_version": {
+                  "type": "null"
+                },
+                "fleet_desktop_version": {
+                  "type": "null"
+                },
+                "scripts_enabled": {
+                  "type": "null"
+                },
+                "os_version": {
+                  "type": "string"
+                },
+                "build": {
+                  "type": "string"
+                },
+                "platform_like": {
+                  "type": "string"
+                },
+                "code_name": {
+                  "type": "string"
+                },
+                "uptime": {
+                  "type": "integer"
+                },
+                "memory": {
+                  "type": "integer"
+                },
+                "cpu_type": {
+                  "type": "string"
+                },
+                "cpu_subtype": {
+                  "type": "string"
+                },
+                "cpu_brand": {
+                  "type": "string"
+                },
+                "cpu_physical_cores": {
+                  "type": "integer"
+                },
+                "cpu_logical_cores": {
+                  "type": "integer"
+                },
+                "hardware_vendor": {
+                  "type": "string"
+                },
+                "hardware_model": {
+                  "type": "string"
+                },
+                "hardware_version": {
+                  "type": "string"
+                },
+                "hardware_serial": {
+                  "type": "string"
+                },
+                "computer_name": {
+                  "type": "string"
+                },
+                "timezone": {
+                  "type": "null"
+                },
+                "public_ip": {
+                  "type": "string"
+                },
+                "primary_ip": {
+                  "type": "string"
+                },
+                "primary_mac": {
+                  "type": "string"
+                },
+                "distributed_interval": {
+                  "type": "integer"
+                },
+                "config_tls_refresh": {
+                  "type": "integer"
+                },
+                "logger_tls_period": {
+                  "type": "integer"
+                },
+                "team_id": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "pack_stats": {
+                  "type": "null"
+                },
+                "team_name": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "gigs_disk_space_available": {
+                  "type": "number"
+                },
+                "percent_disk_space_available": {
+                  "type": "number"
+                },
+                "gigs_total_disk_space": {
+                  "type": "number"
+                },
+                "gigs_all_disk_space": {
+                  "type": "null"
+                },
+                "issues": {
+                  "type": "object",
+                  "properties": {
+                    "failing_policies_count": {
+                      "type": "integer"
+                    },
+                    "critical_vulnerabilities_count": {
+                      "type": "integer"
+                    },
+                    "total_issues_count": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "critical_vulnerabilities_count",
+                    "failing_policies_count",
+                    "total_issues_count"
+                  ]
+                },
+                "mdm": {
+                  "type": "object",
+                  "properties": {
+                    "enrollment_status": {
+                      "type": "string"
+                    },
+                    "dep_profile_error": {
+                      "type": "boolean"
+                    },
+                    "server_url": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "encryption_key_available": {
+                      "type": "boolean"
+                    },
+                    "connected_to_fleet": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "connected_to_fleet",
+                    "dep_profile_error",
+                    "encryption_key_available",
+                    "enrollment_status",
+                    "name",
+                    "server_url"
+                  ]
+                },
+                "refetch_critical_queries_until": {
+                  "type": "null"
+                },
+                "last_restarted_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "display_text": {
+                  "type": "string"
+                },
+                "display_name": {
+                  "type": "string"
+                },
+                "fleet_id": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "fleet_name": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                }
+              },
+              "required": [
+                "build",
+                "code_name",
+                "computer_name",
+                "config_tls_refresh",
+                "cpu_brand",
+                "cpu_logical_cores",
+                "cpu_physical_cores",
+                "cpu_subtype",
+                "cpu_type",
+                "created_at",
+                "detail_updated_at",
+                "display_name",
+                "display_text",
+                "distributed_interval",
+                "fleet_desktop_version",
+                "fleet_id",
+                "fleet_name",
+                "gigs_all_disk_space",
+                "gigs_disk_space_available",
+                "gigs_total_disk_space",
+                "hardware_model",
+                "hardware_serial",
+                "hardware_vendor",
+                "hardware_version",
+                "hostname",
+                "id",
+                "issues",
+                "label_updated_at",
+                "last_enrolled_at",
+                "last_restarted_at",
+                "logger_tls_period",
+                "mdm",
+                "memory",
+                "orbit_version",
+                "os_version",
+                "osquery_version",
+                "pack_stats",
+                "percent_disk_space_available",
+                "platform",
+                "platform_like",
+                "policy_updated_at",
+                "primary_ip",
+                "primary_mac",
+                "public_ip",
+                "refetch_critical_queries_until",
+                "refetch_requested",
+                "scripts_enabled",
+                "seen_time",
+                "software",
+                "software_updated_at",
+                "status",
+                "team_id",
+                "team_name",
+                "timezone",
+                "updated_at",
+                "uptime",
+                "uuid"
+              ]
             }
-          },
-          "software": {},
-          "software_title": {},
-          "munki_issue": {},
-          "mobile_device_management_solution": {}
+          }
         },
         "required": [
           "hosts"
