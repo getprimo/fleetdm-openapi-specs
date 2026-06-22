@@ -96,6 +96,12 @@
                 "details": {
                   "type": "object",
                   "properties": {
+                    "host_id": {
+                      "type": "integer"
+                    },
+                    "host_display_name": {
+                      "type": "string"
+                    },
                     "team_id": {
                       "type": [
                         "integer",
@@ -124,12 +130,6 @@
                       "type": "integer"
                     },
                     "label_name": {
-                      "type": "string"
-                    },
-                    "host_id": {
-                      "type": "integer"
-                    },
-                    "host_display_name": {
                       "type": "string"
                     },
                     "public_ip": {
