@@ -1,0 +1,61 @@
+name: Spec autonomy
+
+# Closes the loop: a scheduled job re-infers endpoint schemas from the live
+# Fleet API and opens a PR when the committed spec drifts; PRs are gated by a
+# live conformance check.
+#
+# Required repository secrets:
+#   FLEET_URL          e.g. https://primofun.mdm.getprimo.com
+#   FLEET_TOKEN        Fleet API token (read-only usage)
+#   FLEET_API_VERSION  optional, defaults to "latest"
+
+on:
+  pull_request:
+    paths: ['fleet-openapi.json', 'src/validate/**']
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+env:
+  FLEET_URL: ${{ secrets.FLEET_URL }}
+  FLEET_TOKEN: ${{ secrets.FLEET_TOKEN }}
+  FLEET_API_VERSION: ${{ secrets.FLEET_API_VERSION }}
+
+jobs:
+  # Gate: on PRs, fail if the live response no longer matches the committed spec.
+  check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run validate
+
+  # Sync: on schedule/manual, re-infer from live and open a PR if anything changed.
+  sync:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run validate -- --write
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: spec/live-sync
+          title: 'chore(spec): sync schemas from live Fleet API'
+          commit-message: 'chore(spec): sync schemas from live Fleet API'
+          body: |
+            Automated update: response schemas re-inferred from the live Fleet
+            API. Review the diff in `fleet-openapi.json` before merging.
+          labels: spec-sync
