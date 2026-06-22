@@ -96,6 +96,12 @@
                 "details": {
                   "type": "object",
                   "properties": {
+                    "host_id": {
+                      "type": "integer"
+                    },
+                    "host_display_name": {
+                      "type": "string"
+                    },
                     "team_id": {
                       "type": [
                         "integer",
@@ -124,12 +130,6 @@
                       "type": "integer"
                     },
                     "label_name": {
-                      "type": "string"
-                    },
-                    "host_id": {
-                      "type": "integer"
-                    },
-                    "host_display_name": {
                       "type": "string"
                     },
                     "public_ip": {
@@ -8231,6 +8231,66 @@
           "software"
         ]
       },
+      "SoftwareVersionsByIdResponse": {
+        "type": "object",
+        "properties": {
+          "software": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              },
+              "extension_id": {
+                "type": "string"
+              },
+              "extension_for": {
+                "type": "string"
+              },
+              "browser": {
+                "type": "string"
+              },
+              "generated_cpe": {
+                "type": "string"
+              },
+              "vulnerabilities": {
+                "type": "null"
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "bundle_identifier": {
+                "type": "string"
+              },
+              "last_opened_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "browser",
+              "display_name",
+              "extension_for",
+              "generated_cpe",
+              "id",
+              "name",
+              "source",
+              "version",
+              "vulnerabilities"
+            ]
+          }
+        },
+        "required": [
+          "software"
+        ]
+      },
       "UsersResponse": {
         "type": "object",
         "properties": {
@@ -12172,6 +12232,51 @@
               "type": "boolean"
             },
             "description": "_Available in Fleet Premium_. If true only vulnerability name is included in response. If false (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium. See notes below on performance."
+          }
+        ]
+      }
+    },
+    "/api/v1/fleet/software/versions/{id}": {
+      "get": {
+        "tags": [
+          "Software"
+        ],
+        "summary": "Get software version",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoftwareVersionsByIdResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Required. The software version's ID."
+          },
+          {
+            "name": "fleet_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "_Available in Fleet Premium_. Filters response data to the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
           }
         ]
       }
