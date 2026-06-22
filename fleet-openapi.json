@@ -126,6 +126,12 @@
                     "label_name": {
                       "type": "string"
                     },
+                    "host_id": {
+                      "type": "integer"
+                    },
+                    "host_display_name": {
+                      "type": "string"
+                    },
                     "public_ip": {
                       "type": "string"
                     },
@@ -204,13 +210,7 @@
                     "status": {
                       "type": "string"
                     },
-                    "host_id": {
-                      "type": "integer"
-                    },
                     "install_uuid": {
-                      "type": "string"
-                    },
-                    "host_display_name": {
                       "type": "string"
                     },
                     "from_setup_experience": {
@@ -5208,9 +5208,7 @@
                   },
                   "required": [
                     "host_display_name",
-                    "host_id",
-                    "policy_id",
-                    "policy_name"
+                    "host_id"
                   ]
                 }
               },
@@ -7988,6 +7986,100 @@
           "counts_updated_at",
           "meta",
           "software_titles"
+        ]
+      },
+      "SoftwareTitlesByIdResponse": {
+        "type": "object",
+        "properties": {
+          "software_title": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "icon_url": {
+                "type": "null"
+              },
+              "source": {
+                "type": "string"
+              },
+              "extension_for": {
+                "type": "string"
+              },
+              "browser": {
+                "type": "string"
+              },
+              "hosts_count": {
+                "type": "integer"
+              },
+              "versions_count": {
+                "type": "integer"
+              },
+              "versions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "vulnerabilities": {
+                      "type": "null"
+                    },
+                    "hosts_count": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "hosts_count",
+                    "id",
+                    "version",
+                    "vulnerabilities"
+                  ]
+                }
+              },
+              "counts_updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "software_package": {
+                "type": "null"
+              },
+              "app_store_app": {
+                "type": "null"
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "upgrade_code": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "app_store_app",
+              "browser",
+              "counts_updated_at",
+              "display_name",
+              "extension_for",
+              "hosts_count",
+              "icon_url",
+              "id",
+              "name",
+              "software_package",
+              "source",
+              "versions",
+              "versions_count"
+            ]
+          }
+        },
+        "required": [
+          "software_title"
         ]
       },
       "SoftwareVersionsResponse": {
@@ -11900,6 +11992,51 @@
               "type": "boolean"
             },
             "description": "If true or 1, only list software that has detected vulnerabilities. Default is false."
+          }
+        ]
+      }
+    },
+    "/api/v1/fleet/software/titles/{id}": {
+      "get": {
+        "tags": [
+          "Software"
+        ],
+        "summary": "Get software",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoftwareTitlesByIdResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Required. The software title's ID."
+          },
+          {
+            "name": "fleet_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "_Available in Fleet Premium_. Filters response data to the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
           }
         ]
       }
