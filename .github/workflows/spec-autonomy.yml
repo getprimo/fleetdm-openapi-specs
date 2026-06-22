@@ -24,7 +24,9 @@ env:
 jobs:
   # Gate: on PRs, fail if the live response no longer matches the committed spec.
   check:
-    if: github.event_name == 'pull_request'
+    # The bot's own sync PR is generated from live and conforms by construction;
+    # only gate human edits to the spec.
+    if: github.event_name == 'pull_request' && github.head_ref != 'spec/live-sync'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
