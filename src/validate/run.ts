@@ -23,6 +23,7 @@ import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { PROBES, type Probe } from './probes';
 import { infer } from './infer';
+import { fetchDocs, extractParams, type DocParam } from './docs';
 
 const SPEC_PATH = path.join(__dirname, '..', '..', 'fleet-openapi.json');
 const MAX_SAMPLES = 5;
@@ -68,14 +69,35 @@ function scalarType(v: unknown): 'integer' | 'number' | 'boolean' | 'string' {
   return 'string';
 }
 
-function buildOperation(probe: Probe, paramTypes: Record<string, string>): any {
+function buildOperation(probe: Probe, paramTypes: Record<string, string>, docParams: DocParam[]): any {
+  const find = (where: string, name: string) => docParams.find((p) => p.in === where && p.name === name);
   const parameters: any[] = [];
+
+  // Path params: names from the URL, types/descriptions enriched from the docs.
   for (const name of pathParamNames(probe.specPath)) {
-    parameters.push({ name, in: 'path', required: true, schema: { type: paramTypes[name] ?? 'string' } });
+    const d = find('path', name);
+    const param: any = { name, in: 'path', required: true, schema: { type: d?.type ?? paramTypes[name] ?? 'string' } };
+    if (d?.description) param.description = d.description;
+    parameters.push(param);
   }
-  for (const [name, value] of Object.entries(probe.query ?? {})) {
-    parameters.push({ name, in: 'query', required: false, schema: { type: scalarType(value) } });
+
+  // Query params: the full documented set, unioned with whatever we actually send.
+  const queryNames = new Set<string>([
+    ...docParams.filter((p) => p.in === 'query').map((p) => p.name),
+    ...Object.keys(probe.query ?? {}),
+  ]);
+  for (const name of [...queryNames].sort()) {
+    const d = find('query', name);
+    const param: any = {
+      name,
+      in: 'query',
+      required: d?.required ?? false,
+      schema: { type: d?.type ?? scalarType((probe.query ?? {})[name]) },
+    };
+    if (d?.description) param.description = d.description;
+    parameters.push(param);
   }
+
   const op: any = {
     tags: probe.tags,
     summary: probe.summary,
@@ -179,6 +201,17 @@ async function main(): Promise<void> {
     return store(probe, { ok: true, bodies });
   }
 
+  // The input contract (query params, path-param docs) comes from Fleet's docs,
+  // which the live API can't reveal. Only needed when regenerating the spec.
+  let docs: string | null = null;
+  if (write) {
+    try {
+      docs = await fetchDocs();
+    } catch (err) {
+      console.warn(`⚠ ${(err as Error).message} — query params limited to sampled values.`);
+    }
+  }
+
   const spec = JSON.parse(fs.readFileSync(SPEC_PATH, 'utf8'));
   const prevSchemas: Record<string, any> = spec.components?.schemas ?? {};
   const nextPaths: Record<string, any> = {};
@@ -203,8 +236,9 @@ async function main(): Promise<void> {
 
     if (write) {
       const inferred = infer(result.bodies);
+      const docParams = docs ? extractParams(docs, probe.method, probe.specPath) : [];
       nextSchemas[component] = inferred;
-      (nextPaths[probe.specPath] ??= {})[probe.method] = buildOperation(probe, paramTypes.get(probe.name) ?? {});
+      (nextPaths[probe.specPath] ??= {})[probe.method] = buildOperation(probe, paramTypes.get(probe.name) ?? {}, docParams);
       const changes = diff(prevSchemas[component], inferred);
       if (changes.length) {
         console.log(`↻ ${probe.name}: ${component} (${changes.length} change(s), ${result.bodies.length} sample(s))`);
