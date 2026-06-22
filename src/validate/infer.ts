@@ -22,8 +22,14 @@ function inferOne(value: unknown): Schema {
   }
   if (value !== null && typeof value === 'object') {
     const properties: Schema = {};
-    for (const [k, v] of Object.entries(value)) properties[k] = inferOne(v);
-    return { type: 'object', properties, required: Object.keys(value).sort() };
+    const required: string[] = [];
+    for (const [k, v] of Object.entries(value)) {
+      // JSON never yields `undefined`; treat a stray one as an absent field.
+      if (v === undefined) continue;
+      properties[k] = inferOne(v);
+      required.push(k);
+    }
+    return { type: 'object', properties, required: required.sort() };
   }
   const type = scalarType(value);
   if (type === 'string' && typeof value === 'string' && ISO_DATE_TIME.test(value)) {

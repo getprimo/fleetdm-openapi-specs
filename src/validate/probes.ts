@@ -70,4 +70,22 @@ export const PROBES: Probe[] = [
     responseName: 'GetHostResponse',
     params: { identifier: { from: 'list-hosts', pick: 'hosts.*.uuid' } },
   },
+  {
+    name: 'host-software',
+    method: 'get',
+    specPath: '/api/v1/fleet/hosts/{id}/software',
+    summary: 'List software installed on a host',
+    tags: ['Software'],
+    params: { id: { from: 'list-hosts', pick: 'hosts.*.id' } },
+    query: { per_page: 5 },
+  },
+  {
+    name: 'host-activities',
+    method: 'get',
+    specPath: '/api/v1/fleet/hosts/{id}/activities',
+    summary: 'List activities for a host',
+    tags: ['Activities'],
+    params: { id: { from: 'list-hosts', pick: 'hosts.*.id' } },
+    query: { per_page: 5 },
+  },
 ];
