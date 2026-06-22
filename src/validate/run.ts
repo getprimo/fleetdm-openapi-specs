@@ -1,32 +1,53 @@
 /**
  * Live-driven OpenAPI generator + checker for Fleet endpoints.
  *
- *   npm run validate            hit the live API and fail (exit 1) if any
- *                               response no longer matches the committed spec.
+ *   npm run validate            hit the live API and fail (exit 1) if any live
+ *                               response does not *conform* to the committed
+ *                               schema (CI gate — tolerant of additive fields).
  *   npm run validate -- --write regenerate the spec from the manifest + live
  *                               responses (used by the autonomy workflow to
  *                               open a PR when the diff is non-empty).
  *
  * The whole `paths` and `components.schemas` of fleet-openapi.json are rebuilt
  * from probes.ts + inferred live shapes; the document envelope (info, servers,
- * security scheme) is preserved as-is. Read-only: only GET probes are sent, and
- * path parameters are resolved by chaining values out of other probes (probes.ts).
+ * security scheme) is preserved as-is. Read-only: only GET probes are sent.
+ *
+ * Path parameters are resolved by chaining (probes.ts). A `*` in a pick fans the
+ * probe out across every matching value; the responses are merged so nullability
+ * and optionality are observed across many objects, not guessed from one.
  */
 import 'dotenv/config';
 import * as fs from 'fs';
 import * as path from 'path';
+import Ajv2020 from 'ajv/dist/2020';
+import addFormats from 'ajv-formats';
 import { PROBES, type Probe } from './probes';
 import { infer } from './infer';
 
 const SPEC_PATH = path.join(__dirname, '..', '..', 'fleet-openapi.json');
+const MAX_SAMPLES = 5;
 
 type ProbeResult =
-  | { ok: true; body: any }
+  | { ok: true; bodies: any[] }
   | { ok: false; httpStatus: number }
   | { ok: false; skipped: string };
 
-function pick(obj: unknown, dotted: string): unknown {
-  return dotted.split('.').reduce<any>((o, k) => (o == null ? undefined : o[k]), obj);
+/** Resolve a dotted path into all matching values. `*` matches every array element. */
+function pickAll(obj: unknown, dotted: string): unknown[] {
+  let current: any[] = [obj];
+  for (const seg of dotted.split('.')) {
+    const next: any[] = [];
+    for (const node of current) {
+      if (node == null) continue;
+      if (seg === '*') {
+        if (Array.isArray(node)) next.push(...node);
+      } else {
+        next.push(node[seg]);
+      }
+    }
+    current = next;
+  }
+  return current.filter((v) => v !== undefined && v !== null);
 }
 
 function pascal(s: string): string {
@@ -70,7 +91,7 @@ function buildOperation(probe: Probe, paramTypes: Record<string, string>): any {
   return op;
 }
 
-/** Order-insensitive stable serialization for comparison. */
+/** Stable serialization (order-insensitive) for change reporting. */
 function stable(o: unknown): string {
   if (Array.isArray(o)) return `[${o.map(stable).join(',')}]`;
   if (o && typeof o === 'object') {
@@ -82,7 +103,7 @@ function stable(o: unknown): string {
   return JSON.stringify(o);
 }
 
-/** Lists changed JSON paths between two schema objects (for human/PR logs). */
+/** Lists changed JSON paths between two schema objects (for --write logs). */
 function diff(a: any, b: any, p = '$', out: string[] = []): string[] {
   if (stable(a) === stable(b)) return out;
   const isObj = (v: any) => v && typeof v === 'object' && !Array.isArray(v);
@@ -112,71 +133,106 @@ async function main(): Promise<void> {
   const cache = new Map<string, ProbeResult>();
   const paramTypes = new Map<string, Record<string, string>>();
   const store = (probe: Probe, r: ProbeResult): ProbeResult => (cache.set(probe.name, r), r);
+  const applyParams = (p: string, params: Record<string, string>): string =>
+    Object.entries(params).reduce((acc, [k, v]) => acc.replace(`{${k}}`, encodeURIComponent(v)), p);
 
-  /** Fetch a probe (and its dependencies) once, memoized. */
+  /** Fetch a probe (and its dependencies) once, memoized. Fans out on `*` picks. */
   async function resolve(probe: Probe, stack: Set<string> = new Set()): Promise<ProbeResult> {
     const cached = cache.get(probe.name);
     if (cached) return cached;
     if (stack.has(probe.name)) throw new Error(`Cyclic probe dependency at '${probe.name}'`);
     stack.add(probe.name);
 
-    const params: Record<string, string> = {};
+    // Resolve each path parameter to its candidate value(s).
+    const candidates: Record<string, string[]> = {};
     const types: Record<string, string> = {};
     for (const [name, src] of Object.entries(probe.params ?? {})) {
       const dep = byName.get(src.from);
       if (!dep) return store(probe, { ok: false, skipped: `unknown source '${src.from}'` });
       const depRes = await resolve(dep, stack);
       if (!depRes.ok) return store(probe, { ok: false, skipped: `source '${src.from}' unavailable` });
-      const value = pick(depRes.body, src.pick);
-      if (value === undefined || value === null)
-        return store(probe, { ok: false, skipped: `no value at '${src.pick}' in '${src.from}'` });
-      params[name] = String(value);
-      types[name] = scalarType(value);
+      const values = pickAll(depRes.bodies[0], src.pick);
+      if (!values.length) return store(probe, { ok: false, skipped: `no value at '${src.pick}' in '${src.from}'` });
+      types[name] = scalarType(values[0]);
+      candidates[name] = values.slice(0, MAX_SAMPLES).map(String);
     }
     paramTypes.set(probe.name, types);
 
-    const livePath = probe.specPath.replace(/^\/api\/v1\//, `/api/${version}/`);
-    const url = new URL(base!.replace(/\/$/, '') + applyParams(livePath, params));
-    for (const [k, v] of Object.entries(probe.query ?? {})) url.searchParams.set(k, String(v));
-    const res = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) return store(probe, { ok: false, httpStatus: res.status });
-    return store(probe, { ok: true, body: await res.json() });
+    // Cartesian product of candidates, capped at MAX_SAMPLES requests.
+    let combos: Record<string, string>[] = [{}];
+    for (const [name, values] of Object.entries(candidates)) {
+      combos = combos.flatMap((c) => values.map((v) => ({ ...c, [name]: v })));
+    }
+    combos = combos.slice(0, MAX_SAMPLES);
+
+    const bodies: any[] = [];
+    let lastHttp = 0;
+    for (const combo of combos) {
+      const livePath = applyParams(probe.specPath.replace(/^\/api\/v1\//, `/api/${version}/`), combo);
+      const url = new URL(base!.replace(/\/$/, '') + livePath);
+      for (const [k, v] of Object.entries(probe.query ?? {})) url.searchParams.set(k, String(v));
+      const res = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) bodies.push(await res.json());
+      else lastHttp = res.status;
+    }
+    if (!bodies.length) return store(probe, { ok: false, httpStatus: lastHttp });
+    return store(probe, { ok: true, bodies });
   }
-  const applyParams = (p: string, params: Record<string, string>): string =>
-    Object.entries(params).reduce((acc, [k, v]) => acc.replace(`{${k}}`, encodeURIComponent(v)), p);
 
   const spec = JSON.parse(fs.readFileSync(SPEC_PATH, 'utf8'));
   const prevSchemas: Record<string, any> = spec.components?.schemas ?? {};
   const nextPaths: Record<string, any> = {};
   const nextSchemas: Record<string, any> = {};
-  let drift = false;
+  const ajv = new Ajv2020({ strict: false, allErrors: true });
+  addFormats(ajv);
+  let failed = false;
 
   for (const probe of PROBES) {
     const result = await resolve(probe);
+    const component = componentName(probe);
+
     if (!result.ok) {
       if ('skipped' in result) {
         console.log(`• ${probe.name}: skipped (${result.skipped})`);
       } else {
         console.error(`✗ ${probe.name}: HTTP ${result.httpStatus}`);
-        drift = true;
+        failed = true;
       }
       continue;
     }
 
-    const component = componentName(probe);
-    const inferred = infer([result.body]);
-    nextSchemas[component] = inferred;
-    (nextPaths[probe.specPath] ??= {})[probe.method] = buildOperation(probe, paramTypes.get(probe.name) ?? {});
-
-    if (stable(inferred) === stable(prevSchemas[component])) {
-      console.log(`✓ ${probe.name}: live response matches ${component}`);
+    if (write) {
+      const inferred = infer(result.bodies);
+      nextSchemas[component] = inferred;
+      (nextPaths[probe.specPath] ??= {})[probe.method] = buildOperation(probe, paramTypes.get(probe.name) ?? {});
+      const changes = diff(prevSchemas[component], inferred);
+      if (changes.length) {
+        console.log(`↻ ${probe.name}: ${component} (${changes.length} change(s), ${result.bodies.length} sample(s))`);
+        for (const c of changes.slice(0, 30)) console.log(`    ${c}`);
+        if (changes.length > 30) console.log(`    … ${changes.length - 30} more`);
+      } else {
+        console.log(`✓ ${probe.name}: ${component} unchanged`);
+      }
       continue;
     }
-    drift = true;
-    const changes = diff(prevSchemas[component], inferred);
-    console.log(`${write ? '↻' : '✗'} ${probe.name}: ${component} drifted (${changes.length} change(s))`);
-    for (const c of changes.slice(0, 40)) console.log(`    ${c}`);
-    if (changes.length > 40) console.log(`    … ${changes.length - 40} more`);
+
+    // Check mode: every live sample must conform to the committed schema.
+    const committed = prevSchemas[component];
+    if (!committed) {
+      console.error(`✗ ${probe.name}: ${component} is not in the committed spec`);
+      failed = true;
+      continue;
+    }
+    const validate = ajv.compile(committed);
+    const errors = result.bodies.flatMap((body) => (validate(body) ? [] : validate.errors ?? []));
+    if (errors.length) {
+      failed = true;
+      console.error(`✗ ${probe.name}: ${errors.length} conformance error(s) vs ${component}`);
+      for (const e of errors.slice(0, 20)) console.error(`    ${e.instancePath || '$'} ${e.message}`);
+      if (errors.length > 20) console.error(`    … ${errors.length - 20} more`);
+    } else {
+      console.log(`✓ ${probe.name}: ${result.bodies.length} live sample(s) conform to ${component}`);
+    }
   }
 
   if (write) {
@@ -186,7 +242,7 @@ async function main(): Promise<void> {
     console.log(`\nGenerated ${Object.keys(nextPaths).length} path(s) into ${path.basename(SPEC_PATH)}.`);
     process.exit(0);
   }
-  process.exit(drift ? 1 : 0);
+  process.exit(failed ? 1 : 0);
 }
 
 main().catch((err) => {

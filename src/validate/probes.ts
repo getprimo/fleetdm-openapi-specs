@@ -10,14 +10,17 @@
  * version segment to FLEET_API_VERSION for the live call.
  *
  * Path parameters are resolved by chaining: a probe declares where each
- * `{param}` comes from — a value picked out of another probe's live response.
- * The runner fetches dependencies first, so `/hosts/{id}` is driven by a real
- * id taken from the `/hosts` list. Add an endpoint by appending one entry here.
+ * `{param}` comes from — value(s) picked out of another probe's live response.
+ * The runner fetches dependencies first, so `/hosts/{id}` is driven by real ids
+ * taken from the `/hosts` list. A `*` segment fans out: `hosts.*.id` yields every
+ * host id, the probe is sampled against each, and the responses are merged into
+ * one schema — so per-object nullability/optionality is captured rather than
+ * guessed from a single response. Add an endpoint by appending one entry here.
  */
 export interface ParamSource {
   /** Name of the probe whose response supplies the value. */
   from: string;
-  /** Dotted path into that response, e.g. "hosts.0.id" (array indices are numbers). */
+  /** Dotted path into that response; `*` matches all array elements, e.g. "hosts.*.id". */
   pick: string;
 }
 
@@ -56,7 +59,7 @@ export const PROBES: Probe[] = [
     summary: 'Get host by id',
     tags: ['Hosts'],
     responseName: 'GetHostResponse',
-    params: { id: { from: 'list-hosts', pick: 'hosts.0.id' } },
+    params: { id: { from: 'list-hosts', pick: 'hosts.*.id' } },
   },
   {
     name: 'get-host-by-identifier',
@@ -65,6 +68,6 @@ export const PROBES: Probe[] = [
     summary: 'Get host by identifier',
     tags: ['Hosts'],
     responseName: 'GetHostResponse',
-    params: { identifier: { from: 'list-hosts', pick: 'hosts.0.uuid' } },
+    params: { identifier: { from: 'list-hosts', pick: 'hosts.*.uuid' } },
   },
 ];
