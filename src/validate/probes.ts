@@ -1,18 +1,42 @@
 /**
- * GET-only, read-only probes run against a live Fleet instance.
+ * The manifest: GET-only, read-only probes run against a live Fleet instance.
  *
- * Each probe references a path *as it appears in the spec* (`/api/v1/...`); the
- * runner rewrites the version segment to FLEET_API_VERSION for the live call.
- * Add an endpoint by appending one entry here — nothing else needs to change.
+ * This list is the single source of structure. The whole OpenAPI spec
+ * (paths, parameters and response components) is *generated* from these
+ * entries plus the shapes inferred from live responses — nothing is hand
+ * maintained in fleet-openapi.json.
+ *
+ * Paths are written canonically as `/api/v1/...`; the runner rewrites the
+ * version segment to FLEET_API_VERSION for the live call.
+ *
+ * Path parameters are resolved by chaining: a probe declares where each
+ * `{param}` comes from — a value picked out of another probe's live response.
+ * The runner fetches dependencies first, so `/hosts/{id}` is driven by a real
+ * id taken from the `/hosts` list. Add an endpoint by appending one entry here.
  */
+export interface ParamSource {
+  /** Name of the probe whose response supplies the value. */
+  from: string;
+  /** Dotted path into that response, e.g. "hosts.0.id" (array indices are numbers). */
+  pick: string;
+}
+
 export interface Probe {
-  /** Stable identifier used in the report. */
+  /** Stable identifier used in the report and as a chaining source. */
   name: string;
   /** HTTP method (read-only probes only). */
   method: 'get';
-  /** Path key exactly as it exists in fleet-openapi.json (uses /api/v1/). */
+  /** Canonical path as it should appear in the spec (uses /api/v1/). */
   specPath: string;
-  /** Optional query params appended to the live request. */
+  /** Short human summary for the generated operation. */
+  summary: string;
+  /** OpenAPI tags for the generated operation. */
+  tags: string[];
+  /** Component name for the response schema. Defaults to PascalCase(name)+"Response". */
+  responseName?: string;
+  /** How to fill each path parameter. Omit for paths with no parameters. */
+  params?: Record<string, ParamSource>;
+  /** Query params sent on the live request (also documented on the operation). */
   query?: Record<string, string | number | boolean>;
 }
 
@@ -21,7 +45,26 @@ export const PROBES: Probe[] = [
     name: 'list-hosts',
     method: 'get',
     specPath: '/api/v1/fleet/hosts',
-    // Keep the payload small while still exercising the Host item schema.
+    summary: 'List hosts',
+    tags: ['Hosts'],
     query: { per_page: 5 },
+  },
+  {
+    name: 'get-host',
+    method: 'get',
+    specPath: '/api/v1/fleet/hosts/{id}',
+    summary: 'Get host by id',
+    tags: ['Hosts'],
+    responseName: 'GetHostResponse',
+    params: { id: { from: 'list-hosts', pick: 'hosts.0.id' } },
+  },
+  {
+    name: 'get-host-by-identifier',
+    method: 'get',
+    specPath: '/api/v1/fleet/hosts/identifier/{identifier}',
+    summary: 'Get host by identifier',
+    tags: ['Hosts'],
+    responseName: 'GetHostResponse',
+    params: { identifier: { from: 'list-hosts', pick: 'hosts.0.uuid' } },
   },
 ];

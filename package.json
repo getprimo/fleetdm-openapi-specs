@@ -1,12 +1,10 @@
 {
   "name": "fleetdm-openapi-generator",
   "version": "1.0.0",
-  "description": "Generator for OpenAPI 3.1 specs from FleetDM REST API using Zod",
+  "description": "Autonomous OpenAPI 3.1 spec for the Fleet REST API, generated and kept honest from live API responses",
   "scripts": {
-    "generate": "tsx src/generate-openapi.ts",
-    "serve": "tsx src/swagger-preview.ts",
     "validate": "tsx src/validate/run.ts",
-    "orval": "orval --config orval.config.js"
+    "validate:write": "tsx src/validate/run.ts --write"
   },
   "keywords": [
     "fleetdm",
@@ -18,17 +16,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@asteasolutions/zod-to-openapi": "^8.4.0",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "swagger-ui-express": "^5.0.1",
-    "zod": "^4.3.5"
+    "dotenv": "^17.4.2"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
     "@types/node": "^22.0.0",
-    "@types/swagger-ui-express": "^4.1.8",
-    "orval": "^7.17.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

@@ -1,13 +1,16 @@
 /**
- * Live schema check for Fleet endpoints.
+ * Live-driven OpenAPI generator + checker for Fleet endpoints.
  *
- *   npm run validate           hit the live API, fail (exit 1) if the response
- *                              no longer matches the committed schema (CI gate).
- *   npm run validate -- --write  re-infer schemas from live and patch the spec
- *                              in place (used by the autonomy workflow to open
- *                              a PR when the diff is non-empty).
+ *   npm run validate            hit the live API and fail (exit 1) if any
+ *                               response no longer matches the committed spec.
+ *   npm run validate -- --write regenerate the spec from the manifest + live
+ *                               responses (used by the autonomy workflow to
+ *                               open a PR when the diff is non-empty).
  *
- * Read-only: only GET probes are ever sent.
+ * The whole `paths` and `components.schemas` of fleet-openapi.json are rebuilt
+ * from probes.ts + inferred live shapes; the document envelope (info, servers,
+ * security scheme) is preserved as-is. Read-only: only GET probes are sent, and
+ * path parameters are resolved by chaining values out of other probes (probes.ts).
  */
 import 'dotenv/config';
 import * as fs from 'fs';
@@ -17,21 +20,54 @@ import { infer } from './infer';
 
 const SPEC_PATH = path.join(__dirname, '..', '..', 'fleet-openapi.json');
 
-function buildUrl(base: string, version: string, probe: Probe): string {
-  const livePath = probe.specPath.replace(/^\/api\/v1\//, `/api/${version}/`);
-  const url = new URL(base.replace(/\/$/, '') + livePath);
-  for (const [k, v] of Object.entries(probe.query ?? {})) url.searchParams.set(k, String(v));
-  return url.toString();
+type ProbeResult =
+  | { ok: true; body: any }
+  | { ok: false; httpStatus: number }
+  | { ok: false; skipped: string };
+
+function pick(obj: unknown, dotted: string): unknown {
+  return dotted.split('.').reduce<any>((o, k) => (o == null ? undefined : o[k]), obj);
 }
 
-/** Component name backing this probe's 200 (or first 2xx) response. */
-function responseComponent(spec: any, probe: Probe): string {
-  const op = spec.paths?.[probe.specPath]?.[probe.method];
-  const responses = op?.responses ?? {};
-  const status = responses['200'] ? '200' : Object.keys(responses).find((c) => c.startsWith('2'));
-  const ref = status && responses[status]?.content?.['application/json']?.schema?.$ref;
-  if (!ref) throw new Error(`No 2xx JSON $ref response for ${probe.specPath}`);
-  return ref.split('/').pop()!;
+function pascal(s: string): string {
+  return s.replace(/(^|[-_])(\w)/g, (_, __, c) => c.toUpperCase());
+}
+
+function componentName(probe: Probe): string {
+  return probe.responseName ?? `${pascal(probe.name)}Response`;
+}
+
+function pathParamNames(specPath: string): string[] {
+  return [...specPath.matchAll(/\{(\w+)\}/g)].map((m) => m[1]);
+}
+
+function scalarType(v: unknown): 'integer' | 'number' | 'boolean' | 'string' {
+  if (typeof v === 'boolean') return 'boolean';
+  if (typeof v === 'number') return Number.isInteger(v) ? 'integer' : 'number';
+  return 'string';
+}
+
+function buildOperation(probe: Probe, paramTypes: Record<string, string>): any {
+  const parameters: any[] = [];
+  for (const name of pathParamNames(probe.specPath)) {
+    parameters.push({ name, in: 'path', required: true, schema: { type: paramTypes[name] ?? 'string' } });
+  }
+  for (const [name, value] of Object.entries(probe.query ?? {})) {
+    parameters.push({ name, in: 'query', required: false, schema: { type: scalarType(value) } });
+  }
+  const op: any = {
+    tags: probe.tags,
+    summary: probe.summary,
+    security: [{ BearerAuth: [] }],
+    responses: {
+      '200': {
+        description: 'Successful response',
+        content: { 'application/json': { schema: { $ref: `#/components/schemas/${componentName(probe)}` } } },
+      },
+    },
+  };
+  if (parameters.length) op.parameters = parameters;
+  return op;
 }
 
 /** Order-insensitive stable serialization for comparison. */
@@ -72,38 +108,82 @@ async function main(): Promise<void> {
     process.exit(2);
   }
 
+  const byName = new Map(PROBES.map((p) => [p.name, p]));
+  const cache = new Map<string, ProbeResult>();
+  const paramTypes = new Map<string, Record<string, string>>();
+  const store = (probe: Probe, r: ProbeResult): ProbeResult => (cache.set(probe.name, r), r);
+
+  /** Fetch a probe (and its dependencies) once, memoized. */
+  async function resolve(probe: Probe, stack: Set<string> = new Set()): Promise<ProbeResult> {
+    const cached = cache.get(probe.name);
+    if (cached) return cached;
+    if (stack.has(probe.name)) throw new Error(`Cyclic probe dependency at '${probe.name}'`);
+    stack.add(probe.name);
+
+    const params: Record<string, string> = {};
+    const types: Record<string, string> = {};
+    for (const [name, src] of Object.entries(probe.params ?? {})) {
+      const dep = byName.get(src.from);
+      if (!dep) return store(probe, { ok: false, skipped: `unknown source '${src.from}'` });
+      const depRes = await resolve(dep, stack);
+      if (!depRes.ok) return store(probe, { ok: false, skipped: `source '${src.from}' unavailable` });
+      const value = pick(depRes.body, src.pick);
+      if (value === undefined || value === null)
+        return store(probe, { ok: false, skipped: `no value at '${src.pick}' in '${src.from}'` });
+      params[name] = String(value);
+      types[name] = scalarType(value);
+    }
+    paramTypes.set(probe.name, types);
+
+    const livePath = probe.specPath.replace(/^\/api\/v1\//, `/api/${version}/`);
+    const url = new URL(base!.replace(/\/$/, '') + applyParams(livePath, params));
+    for (const [k, v] of Object.entries(probe.query ?? {})) url.searchParams.set(k, String(v));
+    const res = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) return store(probe, { ok: false, httpStatus: res.status });
+    return store(probe, { ok: true, body: await res.json() });
+  }
+  const applyParams = (p: string, params: Record<string, string>): string =>
+    Object.entries(params).reduce((acc, [k, v]) => acc.replace(`{${k}}`, encodeURIComponent(v)), p);
+
   const spec = JSON.parse(fs.readFileSync(SPEC_PATH, 'utf8'));
+  const prevSchemas: Record<string, any> = spec.components?.schemas ?? {};
+  const nextPaths: Record<string, any> = {};
+  const nextSchemas: Record<string, any> = {};
   let drift = false;
 
   for (const probe of PROBES) {
-    const url = buildUrl(base, version, probe);
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) {
-      console.error(`✗ ${probe.name}: HTTP ${res.status} ${res.statusText} (${url})`);
-      drift = true;
+    const result = await resolve(probe);
+    if (!result.ok) {
+      if ('skipped' in result) {
+        console.log(`• ${probe.name}: skipped (${result.skipped})`);
+      } else {
+        console.error(`✗ ${probe.name}: HTTP ${result.httpStatus}`);
+        drift = true;
+      }
       continue;
     }
-    const body = await res.json();
-    const inferred = infer([body]);
-    const component = responseComponent(spec, probe);
-    const committed = spec.components.schemas[component];
 
-    if (stable(inferred) === stable(committed)) {
+    const component = componentName(probe);
+    const inferred = infer([result.body]);
+    nextSchemas[component] = inferred;
+    (nextPaths[probe.specPath] ??= {})[probe.method] = buildOperation(probe, paramTypes.get(probe.name) ?? {});
+
+    if (stable(inferred) === stable(prevSchemas[component])) {
       console.log(`✓ ${probe.name}: live response matches ${component}`);
       continue;
     }
-
     drift = true;
-    const changes = diff(committed, inferred);
+    const changes = diff(prevSchemas[component], inferred);
     console.log(`${write ? '↻' : '✗'} ${probe.name}: ${component} drifted (${changes.length} change(s))`);
     for (const c of changes.slice(0, 40)) console.log(`    ${c}`);
     if (changes.length > 40) console.log(`    … ${changes.length - 40} more`);
-    if (write) spec.components.schemas[component] = inferred;
   }
 
   if (write) {
+    spec.paths = nextPaths;
+    spec.components = { ...spec.components, schemas: nextSchemas };
     fs.writeFileSync(SPEC_PATH, JSON.stringify(spec, null, 2) + '\n');
-    console.log(`\nWrote inferred schemas to ${path.basename(SPEC_PATH)}.`);
+    console.log(`\nGenerated ${Object.keys(nextPaths).length} path(s) into ${path.basename(SPEC_PATH)}.`);
     process.exit(0);
   }
   process.exit(drift ? 1 : 0);
