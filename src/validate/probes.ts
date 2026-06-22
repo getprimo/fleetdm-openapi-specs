@@ -61,5 +61,5 @@ export const OVERRIDES: ProbeOverride[] = [
   { specPath: '/api/v1/fleet/software/titles/{id}', params: { id: { from: 'software-titles', pick: 'software_titles.*.id' } } },
   { specPath: '/api/v1/fleet/software/titles/{id}/icon', params: { id: { from: 'software-titles', pick: 'software_titles.*.id' } } },
   { specPath: '/api/v1/fleet/software/titles/{id}/package', params: { id: { from: 'software-titles', pick: 'software_titles.*.id' } } },
-  { specPath: '/api/v1/fleet/software/versions/{id}', params: { id: { from: 'software-versions', pick: 'software_versions.*.id' } } },
+  { specPath: '/api/v1/fleet/software/versions/{id}', params: { id: { from: 'software-versions', pick: 'software.*.id' } } },
 ];

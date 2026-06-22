@@ -1235,7 +1235,7 @@ export const PROBES: Probe[] = [
     "params": {
       "id": {
         "from": "software-versions",
-        "pick": "software_versions.*.id"
+        "pick": "software.*.id"
       }
     }
   },
