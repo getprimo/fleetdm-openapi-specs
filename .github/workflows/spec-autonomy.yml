@@ -5,7 +5,7 @@ name: Spec autonomy
 # live conformance check.
 #
 # Required repository secrets:
-#   FLEET_URL          e.g. https://primofun.mdm.getprimo.com
+#   FLEET_URL          e.g. 
 #   FLEET_TOKEN        Fleet API token (read-only usage)
 #   FLEET_API_VERSION  optional, defaults to "latest"
 
