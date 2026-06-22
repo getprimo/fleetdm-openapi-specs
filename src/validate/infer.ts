@@ -70,6 +70,24 @@ function merge(a: Schema, b: Schema): Schema {
   return out;
 }
 
+/**
+ * Deterministically order `properties` keys (alphabetical) so the generated spec
+ * doesn't churn just because the live response returned its keys in a different
+ * order between runs.
+ */
+function sortProperties(schema: Schema): Schema {
+  if (!schema || typeof schema !== 'object') return schema;
+  if (schema.properties) {
+    const sorted: Schema = {};
+    for (const key of Object.keys(schema.properties).sort()) {
+      sorted[key] = sortProperties(schema.properties[key]);
+    }
+    schema.properties = sorted;
+  }
+  if (schema.items) schema.items = sortProperties(schema.items);
+  return schema;
+}
+
 export function infer(samples: unknown[]): Schema {
-  return samples.map(inferOne).reduce(merge);
+  return sortProperties(samples.map(inferOne).reduce(merge));
 }
