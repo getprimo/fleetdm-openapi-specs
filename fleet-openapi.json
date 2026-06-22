@@ -406,13 +406,19 @@
                       "type": "string"
                     },
                     "installed_paths": {
-                      "type": "array",
+                      "type": [
+                        "array",
+                        "null"
+                      ],
                       "items": {
                         "type": "string"
                       }
                     },
                     "signature_information": {
-                      "type": "array",
+                      "type": [
+                        "array",
+                        "null"
+                      ],
                       "items": {
                         "type": "object",
                         "properties": {
@@ -448,6 +454,9 @@
                       "type": "string"
                     },
                     "vendor": {
+                      "type": "string"
+                    },
+                    "upgrade_code": {
                       "type": "string"
                     }
                   },
@@ -587,13 +596,19 @@
                 "type": "integer"
               },
               "team_id": {
-                "type": "integer"
+                "type": [
+                  "integer",
+                  "null"
+                ]
               },
               "pack_stats": {
                 "type": "null"
               },
               "team_name": {
-                "type": "string"
+                "type": [
+                  "null",
+                  "string"
+                ]
               },
               "gigs_disk_space_available": {
                 "type": "number"
@@ -711,7 +726,10 @@
                     ]
                   },
                   "profiles": {
-                    "type": "array",
+                    "type": [
+                      "array",
+                      "null"
+                    ],
                     "items": {
                       "type": "object",
                       "properties": {
@@ -734,10 +752,16 @@
                           "type": "string"
                         },
                         "scope": {
-                          "type": "string"
+                          "type": [
+                            "null",
+                            "string"
+                          ]
                         },
                         "managed_local_account": {
-                          "type": "string"
+                          "type": [
+                            "null",
+                            "string"
+                          ]
                         }
                       },
                       "required": [
@@ -831,14 +855,12 @@
                   }
                 },
                 "required": [
-                  "apple_settings",
                   "connected_to_fleet",
                   "dep_profile_error",
                   "device_status",
                   "encryption_key_archived",
                   "encryption_key_available",
                   "enrollment_status",
-                  "macos_settings",
                   "macos_setup",
                   "name",
                   "os_settings",
@@ -888,7 +910,10 @@
                       "type": "string"
                     },
                     "team_id": {
-                      "type": "null"
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
                     },
                     "resolution": {
                       "type": "string"
@@ -917,7 +942,10 @@
                       "type": "string"
                     },
                     "fleet_id": {
-                      "type": "null"
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
                     }
                   },
                   "required": [
@@ -1009,7 +1037,10 @@
                 "type": "array"
               },
               "batteries": {
-                "type": "array",
+                "type": [
+                  "array",
+                  "null"
+                ],
                 "items": {
                   "type": "object",
                   "properties": {
@@ -1035,7 +1066,10 @@
                       "type": "string"
                     },
                     "idp_info_updated_at": {
-                      "type": "null"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     },
                     "other_emails": {
                       "type": "array",
@@ -1054,6 +1088,12 @@
                           "source"
                         ]
                       }
+                    },
+                    "idp_id": {
+                      "type": "string"
+                    },
+                    "idp_full_name": {
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -1064,12 +1104,16 @@
                 }
               },
               "last_mdm_enrolled_at": {
-                "type": "string",
-                "format": "date-time"
+                "type": [
+                  "null",
+                  "string"
+                ]
               },
               "last_mdm_checked_in_at": {
-                "type": "string",
-                "format": "date-time"
+                "type": [
+                  "null",
+                  "string"
+                ]
               },
               "mdm_enrollment_hardware_attested": {
                 "type": "boolean"
@@ -1087,10 +1131,16 @@
                 "type": "string"
               },
               "fleet_id": {
-                "type": "integer"
+                "type": [
+                  "integer",
+                  "null"
+                ]
               },
               "fleet_name": {
-                "type": "string"
+                "type": [
+                  "null",
+                  "string"
+                ]
               }
             },
             "required": [
