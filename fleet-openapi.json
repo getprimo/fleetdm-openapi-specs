@@ -1216,6 +1216,282 @@
         "required": [
           "host"
         ]
+      },
+      "HostSoftwareResponse": {
+        "type": "object",
+        "properties": {
+          "software": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "icon_url": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "source": {
+                  "type": "string"
+                },
+                "extension_for": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "null"
+                },
+                "installed_versions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "version": {
+                        "type": "string"
+                      },
+                      "vulnerabilities": {
+                        "type": "null"
+                      },
+                      "installed_paths": {
+                        "type": [
+                          "array",
+                          "null"
+                        ],
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "bundle_identifier": {
+                        "type": "string"
+                      },
+                      "signature_information": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "installed_path": {
+                              "type": "string"
+                            },
+                            "team_identifier": {
+                              "type": "string"
+                            },
+                            "hash_sha256": {
+                              "type": "string"
+                            },
+                            "executable_sha256": {
+                              "type": "null"
+                            },
+                            "executable_path": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "executable_path",
+                            "executable_sha256",
+                            "hash_sha256",
+                            "installed_path",
+                            "team_identifier"
+                          ]
+                        }
+                      },
+                      "last_opened_at": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "installed_paths",
+                      "version",
+                      "vulnerabilities"
+                    ]
+                  }
+                },
+                "display_name": {
+                  "type": "string"
+                },
+                "software_package": {
+                  "type": "null"
+                },
+                "app_store_app": {
+                  "type": "null"
+                },
+                "upgrade_code": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "app_store_app",
+                "display_name",
+                "extension_for",
+                "icon_url",
+                "id",
+                "installed_versions",
+                "name",
+                "software_package",
+                "source",
+                "status"
+              ]
+            }
+          },
+          "count": {
+            "type": "integer"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "has_next_results": {
+                "type": "boolean"
+              },
+              "has_previous_results": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "has_next_results",
+              "has_previous_results"
+            ]
+          }
+        },
+        "required": [
+          "count",
+          "meta",
+          "software"
+        ]
+      },
+      "HostActivitiesResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "has_next_results": {
+                "type": "boolean"
+              },
+              "has_previous_results": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "has_next_results",
+              "has_previous_results"
+            ]
+          },
+          "activities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "actor_id": {
+                  "type": "integer"
+                },
+                "actor_full_name": {
+                  "type": "string"
+                },
+                "actor_email": {
+                  "type": "string"
+                },
+                "actor_gravatar": {
+                  "type": "string"
+                },
+                "actor_api_only": {
+                  "type": "boolean"
+                },
+                "fleet_initiated": {
+                  "type": "boolean"
+                },
+                "details": {
+                  "type": "object",
+                  "properties": {
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "host_id": {
+                      "type": "integer"
+                    },
+                    "policy_id": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "policy_name": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "script_name": {
+                      "type": "string"
+                    },
+                    "host_display_name": {
+                      "type": "string"
+                    },
+                    "batch_execution_id": {
+                      "type": "null"
+                    },
+                    "script_execution_id": {
+                      "type": "string"
+                    },
+                    "from_setup_experience": {
+                      "type": "boolean"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "install_uuid": {
+                      "type": "string"
+                    },
+                    "self_service": {
+                      "type": "boolean"
+                    },
+                    "software_title": {
+                      "type": "string"
+                    },
+                    "software_package": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "host_display_name",
+                    "host_id",
+                    "policy_id",
+                    "policy_name"
+                  ]
+                }
+              },
+              "required": [
+                "actor_email",
+                "actor_full_name",
+                "created_at",
+                "details",
+                "fleet_initiated",
+                "id",
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "activities",
+          "meta"
+        ]
       }
     }
   },
@@ -1245,12 +1521,364 @@
         },
         "parameters": [
           {
+            "name": "additional_info_filters",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma-delimited list of fields to include in each host's additional object. This query is populated by the additional_queries in the features section of the configuration YAML."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used. Note: Use page instead of after"
+          },
+          {
+            "name": "bootstrap_package",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "_Available in Fleet Premium_. Filters the hosts by the status of the MDM bootstrap package on the host. Valid options are 'installed', 'pending', or 'failed'."
+          },
+          {
+            "name": "connected_to_fleet",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter hosts that are talking to this Fleet server for MDM features. In rare cases, hosts can be enrolled to one Fleet server but talk to a different Fleet server for MDM features. In this case, the value would be false. Always false for Linux hosts."
+          },
+          {
+            "name": "dep_assign_profile_response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters the hosts by DEP profile assignment status. Valid options are 'SUCCESS', 'FAILED', 'THROTTLED' or 'NOT_ACCESSIBLE'. Only Apple hosts which are, or were assigned to Fleet in ABM will be returned."
+          },
+          {
+            "name": "dep_profile_error",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, the response will only include Apple MDM hosts with DEP profile assignment errors(mdm.dep_profile_error: true)."
+          },
+          {
+            "name": "device_mapping",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Indicates whether device_mapping should be included for each host."
+          },
+          {
+            "name": "disable_failing_policies",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, hosts will return failing policies as 0 regardless of whether there are any that failed for the host. This is meant to be used when increased performance is needed in exchange for the extra information."
+          },
+          {
+            "name": "fleet_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "_Available in Fleet Premium_. Filters to only include hosts in the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
+          },
+          {
+            "name": "include_device_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, the response will include lock and wipe status (mdm.device_status) and mdm.pending_action information for each host."
+          },
+          {
+            "name": "low_disk_space",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "_Available in Fleet Premium_. Filters the hosts to only include hosts with less GB of disk space available than this value. Must be a number between 1-100."
+          },
+          {
+            "name": "macos_settings",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters the hosts by the status of the _mobile device management_ (MDM) profiles applied to hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
+          },
+          {
+            "name": "macos_settings_disk_encryption",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'."
+          },
+          {
+            "name": "mdm_enrollment_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
+          },
+          {
+            "name": "mdm_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider and URL)."
+          },
+          {
+            "name": "mdm_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider)."
+          },
+          {
+            "name": "munki_issue_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the _munki issue_ (a Munki-reported error or warning message) to filter hosts by (that is, filter hosts that are affected by that corresponding error or warning message)."
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
+          },
+          {
+            "name": "order_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "What to order results by. Can be any column in the hosts table."
+          },
+          {
+            "name": "os_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the operating system to filter hosts by. os_version must also be specified with os_name. See note below for filtering Windows hosts."
+          },
+          {
+            "name": "os_settings",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters the hosts by the status of the operating system settings applied to the hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
+          },
+          {
+            "name": "os_settings_disk_encryption",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
+          },
+          {
+            "name": "os_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The version of the operating system to filter hosts by. os_name must also be specified with os_version. See note below for filtering Windows hosts."
+          },
+          {
+            "name": "os_version_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the operating system version to filter hosts by."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number of the results to fetch."
+          },
+          {
             "name": "per_page",
             "in": "query",
             "required": false,
             "schema": {
               "type": "integer"
-            }
+            },
+            "description": "Results per page."
+          },
+          {
+            "name": "policy_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the policy to filter hosts by."
+          },
+          {
+            "name": "policy_response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requires policy_id. Valid options are 'passing' or 'failing'."
+          },
+          {
+            "name": "populate_labels",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, the response will include labels for each host."
+          },
+          {
+            "name": "populate_policies",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, the response will include policy data for each host, including Fleet-maintained policies."
+          },
+          {
+            "name": "populate_software",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "If false (or omitted), omits installed software details for each host. If \"without_vulnerability_details\", include a list of installed software for each host, including which CVEs apply to the installed software versions. true adds vulnerability description, CVSS score, and other details when using Fleet Premium. See notes below on performance."
+          },
+          {
+            "name": "populate_users",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, the response will include user data for each host."
+          },
+          {
+            "name": "profile_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requires profile_uuid. Valid options are 'verified', 'verifying', 'pending', or 'failed'."
+          },
+          {
+            "name": "profile_uuid",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requires profile_status. The UUID of the profile to download."
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search query keywords. Searchable fields include hostname, hardware_serial, uuid, ipv4, and end user email addresses."
+          },
+          {
+            "name": "software_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The status of the software install to filter hosts by. One of: pending_install, failed_install, installed, pending_uninstall, failed_uninstall, pending, or failed. Mutually exclusive with software_version_id, and must be supplied if software_title_id is set."
+          },
+          {
+            "name": "software_title_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the software title to filter hosts by."
+          },
+          {
+            "name": "software_version_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the software version to filter hosts by."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
+          },
+          {
+            "name": "vulnerability",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The cve to filter hosts by (including \"cve-\" prefix, case-insensitive)."
           }
         ]
       }
@@ -1285,7 +1913,26 @@
             "required": true,
             "schema": {
               "type": "integer"
-            }
+            },
+            "description": "Required. The host's id."
+          },
+          {
+            "name": "exclude_fleet_maintained_policies",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, will omit Fleet-maintained policies from the policies list."
+          },
+          {
+            "name": "exclude_software",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, the response will not include a list of installed software for the host."
           }
         ]
       }
@@ -1320,7 +1967,260 @@
             "required": true,
             "schema": {
               "type": "string"
+            },
+            "description": "Required. The host's hostname, uuid, or hardware_serial."
+          },
+          {
+            "name": "exclude_fleet_maintained_policies",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, will omit Fleet-maintained policies from the policies list."
+          },
+          {
+            "name": "exclude_software",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, the response will not include a list of installed software for the host."
+          }
+        ]
+      }
+    },
+    "/api/v1/fleet/hosts/{id}/software": {
+      "get": {
+        "tags": [
+          "Software"
+        ],
+        "summary": "List software installed on a host",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostSoftwareResponse"
+                }
+              }
             }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Required. The host's ID."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
+          },
+          {
+            "name": "available_for_install",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true or 1, only list software that is available for install (added by the user). Default is false."
+          },
+          {
+            "name": "exploit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "_Available in Fleet Premium_. If true, filters to only include software with vulnerabilities that have been actively exploited in the wild (cisa_known_exploit: true). Default is false."
+          },
+          {
+            "name": "macos_applications",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, filters to only include software at the top level of the /Applications folder. This parameter applies only to macOS hosts, and is ignored for hosts on other platforms. Default is false."
+          },
+          {
+            "name": "max_cvss_score",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "_Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a CVSS version 3.x base score lower than what's specified."
+          },
+          {
+            "name": "min_cvss_score",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "_Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a CVSS version 3.x base score higher than the specified value."
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
+          },
+          {
+            "name": "order_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "What to order results by. Options include \"name\". Default is \"name\"."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number of the results to fetch."
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Results per page."
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search query keywords. Searchable fields include name."
+          },
+          {
+            "name": "self_service",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true or 1, only lists self-service software. Default is false."
+          },
+          {
+            "name": "vulnerable",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true or 1, only list software that have vulnerabilities. Default is false."
+          }
+        ]
+      }
+    },
+    "/api/v1/fleet/hosts/{id}/activities": {
+      "get": {
+        "tags": [
+          "Activities"
+        ],
+        "summary": "List activities for a host",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostActivitiesResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Required. The host's ID."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
+          },
+          {
+            "name": "order_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "What to order results by. Allowed fields are id, created_at, and activity_type."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number of the results to fetch."
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Results per page. Maximum is 10,000 records. If no pagination parameters are specified, defaults to 10,000."
           }
         ]
       }
