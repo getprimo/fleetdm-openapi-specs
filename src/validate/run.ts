@@ -23,7 +23,7 @@ import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { type Probe } from './probes';
 import { PROBES } from './probes.generated';
-import { infer } from './infer';
+import { infer, mergeSchemas } from './infer';
 import { fetchDocs, extractParams, type DocParam } from './docs';
 
 const SPEC_PATH = path.join(__dirname, '..', '..', 'fleet-openapi.json');
@@ -222,8 +222,10 @@ async function main(): Promise<void> {
 
   const spec = JSON.parse(fs.readFileSync(SPEC_PATH, 'utf8'));
   const prevSchemas: Record<string, any> = spec.components?.schemas ?? {};
-  const nextPaths: Record<string, any> = {};
-  const nextSchemas: Record<string, any> = {};
+  // Seed from the committed spec so a single run only ever adds/widens — it
+  // never drops endpoints it couldn't probe (403/404) or schemas it didn't see.
+  const nextPaths: Record<string, any> = write ? { ...(spec.paths ?? {}) } : {};
+  const nextSchemas: Record<string, any> = write ? { ...prevSchemas } : {};
   const ajv = new Ajv2020({ strict: false, allErrors: true });
   addFormats(ajv);
   let failed = false;
@@ -244,10 +246,15 @@ async function main(): Promise<void> {
 
     if (write) {
       const inferred = infer(result.bodies);
+      // Merge against the run-so-far schema, not the committed one: several probes
+      // can share a component (e.g. hosts-by-id and hosts-identifier-by-identifier
+      // both → HostsByIdResponse), and each must accumulate rather than clobber.
+      const base = nextSchemas[component] ?? prevSchemas[component];
+      const merged = base ? mergeSchemas(base, inferred) : inferred;
       const docParams = docs ? extractParams(docs, probe.method, probe.specPath) : [];
-      nextSchemas[component] = inferred;
+      nextSchemas[component] = merged;
       (nextPaths[probe.specPath] ??= {})[probe.method] = buildOperation(probe, paramTypes.get(probe.name) ?? {}, docParams);
-      const changes = diff(prevSchemas[component], inferred);
+      const changes = diff(prevSchemas[component], merged);
       if (changes.length) {
         console.log(`↻ ${probe.name}: ${component} (${changes.length} change(s), ${result.bodies.length} sample(s))`);
         for (const c of changes.slice(0, 30)) console.log(`    ${c}`);
@@ -280,6 +287,19 @@ async function main(): Promise<void> {
   if (write) {
     spec.paths = nextPaths;
     spec.components = { ...spec.components, schemas: nextSchemas };
+    // Stamp the live Fleet version into the document envelope. The `version`
+    // probe (GET /fleet/version) is already fetched above, so reuse its body
+    // rather than calling the endpoint again.
+    const versionRes = cache.get('version');
+    if (versionRes?.ok && versionRes.bodies[0]?.version) {
+      const v = versionRes.bodies[0];
+      spec.info = {
+        ...spec.info,
+        version: v.version,
+        'x-fleet-revision': v.revision,
+        'x-fleet-build-date': v.build_date,
+      };
+    }
     fs.writeFileSync(SPEC_PATH, JSON.stringify(spec, null, 2) + '\n');
     console.log(`\nGenerated ${Object.keys(nextPaths).length} path(s) into ${path.basename(SPEC_PATH)}.`);
     process.exit(0);

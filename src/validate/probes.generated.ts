@@ -439,7 +439,7 @@ export const PROBES: Probe[] = [
       "Hosts"
     ],
     "query": {
-      "per_page": 5
+      "per_page": 100
     }
   },
   {
@@ -472,7 +472,7 @@ export const PROBES: Probe[] = [
       }
     },
     "query": {
-      "per_page": 5
+      "per_page": 100
     }
   },
   {
@@ -689,7 +689,7 @@ export const PROBES: Probe[] = [
       }
     },
     "query": {
-      "per_page": 5
+      "per_page": 100
     }
   },
   {

@@ -41,10 +41,11 @@ export interface Probe {
 export type ProbeOverride = Partial<Probe> & { specPath: string; skip?: boolean };
 
 export const OVERRIDES: ProbeOverride[] = [
-  // Keep payloads small and exercise pagination params on list endpoints.
-  { specPath: '/api/v1/fleet/hosts', query: { per_page: 5 } },
-  { specPath: '/api/v1/fleet/hosts/{id}/software', query: { per_page: 5 } },
-  { specPath: '/api/v1/fleet/hosts/{id}/activities', query: { per_page: 5 } },
+  // Pull a large page on list endpoints: more array items => far better
+  // nullability/optionality inference, at the cost of slower probes.
+  { specPath: '/api/v1/fleet/hosts', query: { per_page: 100 } },
+  { specPath: '/api/v1/fleet/hosts/{id}/software', query: { per_page: 100 } },
+  { specPath: '/api/v1/fleet/hosts/{id}/activities', query: { per_page: 100 } },
   // The heuristic can't chain `identifier` (no /hosts/identifier collection);
   // source it from a host's uuid in the /hosts list.
   {
