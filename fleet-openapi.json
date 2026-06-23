@@ -3,7 +3,7 @@
   "info": {
     "title": "Fleet REST API",
     "version": "4.86.2",
-    "description": "REST API for Fleet device management platform. Paths and schemas are generated from live API responses; see README.",
+    "description": "REST API for Fleet device management platform. Paths and schemas are inferred from live API responses and accumulated (union/widen) across instances over time; `version` reflects the live Fleet build (see `x-fleet-revision`/`x-fleet-build-date`). See README.",
     "contact": {
       "name": "Fleet",
       "url": "https://fleetdm.com"
