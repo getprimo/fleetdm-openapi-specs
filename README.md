@@ -98,8 +98,11 @@ Three workflows under `.github/workflows/`:
   docs and opens a PR if the set of endpoints changed. Docs only, no secrets.
 - **`sync.yml`** — weekly (+ manual): re-infers the spec from the live API and
   opens a PR if anything drifted.
-- **`check.yml`** — on pull requests: fails if the live API no longer conforms to
-  the committed spec (skips the bot's own branches).
+- **`check.yml`** — on pull requests: fails only on **incompatible drift** — a
+  populated field whose type conflicts with the spec. It tolerates cross-instance
+  variance (different companies expose different data): unreachable endpoints
+  (non-200) are reported, not failed; `required` is not enforced; and a field the
+  spec only ever saw as `null` accepts any value. Skips the bot's own branches.
 
 Set `FLEET_URL` and `FLEET_TOKEN` as repository secrets (Settings → Secrets →
 Actions). `discover` needs neither.

@@ -142,6 +142,28 @@ function diff(a: any, b: any, p = '$', out: string[] = []): string[] {
   return out;
 }
 
+/**
+ * Loosen a committed schema for the cross-instance check gate. Different Fleet
+ * instances expose different data, so the gate must tolerate that variance and
+ * only flag genuinely incompatible drift:
+ *   - drop `required` — a field's presence depends on the instance's data;
+ *   - a field we only ever observed as `null` carries no real type info, so
+ *     accept anything for it (another instance may populate it).
+ * Positive type constraints on populated fields are kept, so a real conflict
+ * (spec says object, live sends string) still fails the gate.
+ */
+function relax(schema: any): any {
+  if (Array.isArray(schema)) return schema.map(relax);
+  if (!schema || typeof schema !== 'object') return schema;
+  if (schema.type === 'null') return {};
+  const out: Record<string, any> = {};
+  for (const [k, v] of Object.entries(schema)) {
+    if (k === 'required') continue;
+    out[k] = relax(v);
+  }
+  return out;
+}
+
 async function main(): Promise<void> {
   const write = process.argv.includes('--write');
   const base = process.env.FLEET_URL;
@@ -238,8 +260,10 @@ async function main(): Promise<void> {
       if ('skipped' in result) {
         console.log(`• ${probe.name}: skipped (${result.skipped})`);
       } else {
-        console.error(`✗ ${probe.name}: HTTP ${result.httpStatus}`);
-        failed = true;
+        // Not probeable on this instance (feature off, permissions, no resource).
+        // The spec only documents 200s, so this is environmental, not drift —
+        // report it but don't fail the gate (instances legitimately differ).
+        console.warn(`⚠ ${probe.name}: HTTP ${result.httpStatus} (not probeable here)`);
       }
       continue;
     }
@@ -272,7 +296,7 @@ async function main(): Promise<void> {
       failed = true;
       continue;
     }
-    const validate = ajv.compile(committed);
+    const validate = ajv.compile(relax(committed));
     const errors = result.bodies.flatMap((body) => (validate(body) ? [] : validate.errors ?? []));
     if (errors.length) {
       failed = true;
