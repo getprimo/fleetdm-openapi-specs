@@ -20,20 +20,26 @@ opens a pull request whenever the committed spec no longer matches reality.
                         │
         ┌───────────────┴────────────────┐
    validate (check)                 validate:write
-   diff live vs committed,          regenerate the spec from
-   exit 1 on drift  ── CI gate      live  ── CI opens a PR on change
+   diff live vs committed,          re-infer from live and merge
+   exit 1 on drift  ── CI gate      into the spec ── CI opens a PR on change
 ```
 
 - **`src/validate/probes.ts`** — the manifest: the GET endpoints to cover. This
   is the single source of *structure* (paths, parameters, chaining).
 - **`src/validate/infer.ts`** — turns a live response into a JSON Schema. Multiple
   samples are merged so optionality (`required` = present in every sample) and
-  nullability are derived, not guessed.
+  nullability are derived, not guessed. `mergeSchemas` also folds a fresh
+  inference into the committed schema (union of properties, widened types).
 - **`src/validate/run.ts`** — `validate` checks the live API against the committed
-  spec (CI gate); `--write` regenerates `fleet-openapi.json` from the manifest +
-  live shapes.
-- **`fleet-openapi.json`** — the generated artifact. Starts empty; every path in
-  it has been verified against a live response.
+  spec (CI gate); `--write` re-infers from the live API and **merges** into
+  `fleet-openapi.json`, and stamps the live Fleet version into `info`.
+- **`fleet-openapi.json`** — the generated artifact. Every path in it has been
+  verified against a live response. `--write` only **adds and widens** — it never
+  drops an endpoint a single run couldn't reach, so the spec accumulates every
+  shape seen across instances and time rather than mirroring one instance.
+
+`info.version` carries the live Fleet version the spec was generated against,
+with `x-fleet-revision` and `x-fleet-build-date` for full provenance.
 
 Path parameters are resolved by **chaining**: to probe `/hosts/{id}`, the runner
 first calls `/hosts`, picks a real `id`, then calls the detail endpoint.
@@ -73,7 +79,7 @@ chaining the heuristic gets wrong, and endpoints to add or drop:
 
 ```ts
 export const OVERRIDES: ProbeOverride[] = [
-  { specPath: '/api/v1/fleet/hosts', query: { per_page: 5 } },        // send a param
+  { specPath: '/api/v1/fleet/hosts', query: { per_page: 100 } },      // send a param
   { specPath: '/api/v1/fleet/hosts/identifier/{identifier}',          // fix chaining
     name: 'hosts-identifier-by-identifier', method: 'get',
     summary: 'Get host by identifier', tags: ['Hosts'],
@@ -92,8 +98,11 @@ Three workflows under `.github/workflows/`:
   docs and opens a PR if the set of endpoints changed. Docs only, no secrets.
 - **`sync.yml`** — weekly (+ manual): re-infers the spec from the live API and
   opens a PR if anything drifted.
-- **`check.yml`** — on pull requests: fails if the live API no longer conforms to
-  the committed spec (skips the bot's own branches).
+- **`check.yml`** — on pull requests: fails only on **incompatible drift** — a
+  populated field whose type conflicts with the spec. It tolerates cross-instance
+  variance (different companies expose different data): unreachable endpoints
+  (non-200) are reported, not failed; `required` is not enforced; and a field the
+  spec only ever saw as `null` accepts any value. Skips the bot's own branches.
 
 Set `FLEET_URL` and `FLEET_TOKEN` as repository secrets (Settings → Secrets →
 Actions). `discover` needs neither.
@@ -102,8 +111,13 @@ Actions). `discover` needs neither.
 
 - **GET-only.** Write endpoints are never exercised (read-only by design).
 - **Sample-driven.** Conditionally populated fields and enums depend on what the
-  live data exposes. Planned: a Claude enrichment pass to add field descriptions,
-  detect enums, and recognise formats (UUID, email, …).
+  live data exposes. Merging across runs mitigates this (each instance/window
+  contributes the shapes it sees), but coverage is still only as wide as the data
+  probed. Planned: a Claude enrichment pass to add field descriptions, detect
+  enums, and recognise formats (UUID, email, …).
+- **Append-only.** Because `--write` merges rather than replaces, a field that
+  genuinely disappears from the API is not auto-removed — pruning a stale field is
+  a manual edit (or a multi-instance confirmation, planned).
 - The `check` gate does not run on the bot's own sync PR (GitHub blocks workflow
   runs on `GITHUB_TOKEN`-created PRs); gating everywhere needs a dedicated token.
 

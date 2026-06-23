@@ -91,3 +91,14 @@ function sortProperties(schema: Schema): Schema {
 export function infer(samples: unknown[]): Schema {
   return sortProperties(samples.map(inferOne).reduce(merge));
 }
+
+/**
+ * Merge a freshly-inferred schema into the previously-committed one (union of
+ * properties, widened types, intersected `required`). Used at `--write` so the
+ * spec accumulates every shape seen across instances/time instead of being
+ * overwritten by whatever a single run happened to observe. The spec only ever
+ * grows: a field that genuinely disappears from the API is not auto-removed.
+ */
+export function mergeSchemas(prev: Schema, next: Schema): Schema {
+  return sortProperties(merge(prev, next));
+}

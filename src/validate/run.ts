@@ -23,7 +23,7 @@ import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { type Probe } from './probes';
 import { PROBES } from './probes.generated';
-import { infer } from './infer';
+import { infer, mergeSchemas } from './infer';
 import { fetchDocs, extractParams, type DocParam } from './docs';
 
 const SPEC_PATH = path.join(__dirname, '..', '..', 'fleet-openapi.json');
@@ -142,6 +142,28 @@ function diff(a: any, b: any, p = '$', out: string[] = []): string[] {
   return out;
 }
 
+/**
+ * Loosen a committed schema for the cross-instance check gate. Different Fleet
+ * instances expose different data, so the gate must tolerate that variance and
+ * only flag genuinely incompatible drift:
+ *   - drop `required` — a field's presence depends on the instance's data;
+ *   - a field we only ever observed as `null` carries no real type info, so
+ *     accept anything for it (another instance may populate it).
+ * Positive type constraints on populated fields are kept, so a real conflict
+ * (spec says object, live sends string) still fails the gate.
+ */
+function relax(schema: any): any {
+  if (Array.isArray(schema)) return schema.map(relax);
+  if (!schema || typeof schema !== 'object') return schema;
+  if (schema.type === 'null') return {};
+  const out: Record<string, any> = {};
+  for (const [k, v] of Object.entries(schema)) {
+    if (k === 'required') continue;
+    out[k] = relax(v);
+  }
+  return out;
+}
+
 async function main(): Promise<void> {
   const write = process.argv.includes('--write');
   const base = process.env.FLEET_URL;
@@ -222,8 +244,10 @@ async function main(): Promise<void> {
 
   const spec = JSON.parse(fs.readFileSync(SPEC_PATH, 'utf8'));
   const prevSchemas: Record<string, any> = spec.components?.schemas ?? {};
-  const nextPaths: Record<string, any> = {};
-  const nextSchemas: Record<string, any> = {};
+  // Seed from the committed spec so a single run only ever adds/widens — it
+  // never drops endpoints it couldn't probe (403/404) or schemas it didn't see.
+  const nextPaths: Record<string, any> = write ? { ...(spec.paths ?? {}) } : {};
+  const nextSchemas: Record<string, any> = write ? { ...prevSchemas } : {};
   const ajv = new Ajv2020({ strict: false, allErrors: true });
   addFormats(ajv);
   let failed = false;
@@ -236,18 +260,25 @@ async function main(): Promise<void> {
       if ('skipped' in result) {
         console.log(`• ${probe.name}: skipped (${result.skipped})`);
       } else {
-        console.error(`✗ ${probe.name}: HTTP ${result.httpStatus}`);
-        failed = true;
+        // Not probeable on this instance (feature off, permissions, no resource).
+        // The spec only documents 200s, so this is environmental, not drift —
+        // report it but don't fail the gate (instances legitimately differ).
+        console.warn(`⚠ ${probe.name}: HTTP ${result.httpStatus} (not probeable here)`);
       }
       continue;
     }
 
     if (write) {
       const inferred = infer(result.bodies);
+      // Merge against the run-so-far schema, not the committed one: several probes
+      // can share a component (e.g. hosts-by-id and hosts-identifier-by-identifier
+      // both → HostsByIdResponse), and each must accumulate rather than clobber.
+      const base = nextSchemas[component] ?? prevSchemas[component];
+      const merged = base ? mergeSchemas(base, inferred) : inferred;
       const docParams = docs ? extractParams(docs, probe.method, probe.specPath) : [];
-      nextSchemas[component] = inferred;
+      nextSchemas[component] = merged;
       (nextPaths[probe.specPath] ??= {})[probe.method] = buildOperation(probe, paramTypes.get(probe.name) ?? {}, docParams);
-      const changes = diff(prevSchemas[component], inferred);
+      const changes = diff(prevSchemas[component], merged);
       if (changes.length) {
         console.log(`↻ ${probe.name}: ${component} (${changes.length} change(s), ${result.bodies.length} sample(s))`);
         for (const c of changes.slice(0, 30)) console.log(`    ${c}`);
@@ -265,7 +296,7 @@ async function main(): Promise<void> {
       failed = true;
       continue;
     }
-    const validate = ajv.compile(committed);
+    const validate = ajv.compile(relax(committed));
     const errors = result.bodies.flatMap((body) => (validate(body) ? [] : validate.errors ?? []));
     if (errors.length) {
       failed = true;
@@ -280,6 +311,19 @@ async function main(): Promise<void> {
   if (write) {
     spec.paths = nextPaths;
     spec.components = { ...spec.components, schemas: nextSchemas };
+    // Stamp the live Fleet version into the document envelope. The `version`
+    // probe (GET /fleet/version) is already fetched above, so reuse its body
+    // rather than calling the endpoint again.
+    const versionRes = cache.get('version');
+    if (versionRes?.ok && versionRes.bodies[0]?.version) {
+      const v = versionRes.bodies[0];
+      spec.info = {
+        ...spec.info,
+        version: v.version,
+        'x-fleet-revision': v.revision,
+        'x-fleet-build-date': v.build_date,
+      };
+    }
     fs.writeFileSync(SPEC_PATH, JSON.stringify(spec, null, 2) + '\n');
     console.log(`\nGenerated ${Object.keys(nextPaths).length} path(s) into ${path.basename(SPEC_PATH)}.`);
     process.exit(0);
