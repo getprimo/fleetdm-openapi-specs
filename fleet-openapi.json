@@ -2021,13 +2021,19 @@
                         ]
                       },
                       "enable_create_local_admin_account": {
-                        "type": "null"
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
                       },
                       "enable_end_user_authentication": {
                         "type": "boolean"
                       },
                       "end_user_local_account_type": {
-                        "type": "null"
+                        "type": [
+                          "null",
+                          "string"
+                        ]
                       },
                       "lock_end_user_info": {
                         "type": "boolean"
@@ -2517,13 +2523,19 @@
                         "type": "boolean"
                       },
                       "enable_managed_local_account": {
-                        "type": "null"
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
                       },
                       "enable_release_device_manually": {
                         "type": "boolean"
                       },
                       "end_user_local_account_type": {
-                        "type": "null"
+                        "type": [
+                          "null",
+                          "string"
+                        ]
                       },
                       "lock_end_user_info": {
                         "type": "boolean"
@@ -4034,6 +4046,9 @@
                     "command_uuid": {
                       "type": "string"
                     },
+                    "from_auto_update": {
+                      "type": "boolean"
+                    },
                     "from_setup_experience": {
                       "type": "boolean"
                     },
@@ -4042,6 +4057,9 @@
                     },
                     "host_id": {
                       "type": "integer"
+                    },
+                    "host_platform": {
+                      "type": "string"
                     },
                     "install_uuid": {
                       "type": "string"
@@ -4100,7 +4118,6 @@
               },
               "required": [
                 "actor_email",
-                "actor_full_name",
                 "created_at",
                 "details",
                 "fleet_initiated",
@@ -6218,7 +6235,69 @@
               "type": "object",
               "properties": {
                 "app_store_app": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "object"
+                  ],
+                  "properties": {
+                    "app_store_id": {
+                      "type": "string"
+                    },
+                    "automatic_install_policies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "type"
+                        ]
+                      }
+                    },
+                    "last_install": {
+                      "type": "object",
+                      "properties": {
+                        "command_uuid": {
+                          "type": "string"
+                        },
+                        "installed_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "command_uuid",
+                        "installed_at"
+                      ]
+                    },
+                    "last_uninstall": {
+                      "type": "null"
+                    },
+                    "package_url": {
+                      "type": "null"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "self_service": {
+                      "type": "boolean"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
                 },
                 "display_name": {
                   "type": "string"
@@ -6315,7 +6394,10 @@
                   "type": "string"
                 },
                 "status": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 },
                 "upgrade_code": {
                   "type": "string"
@@ -7725,6 +7807,9 @@
                     "cpu_percent": {
                       "type": "string"
                     },
+                    "data": {
+                      "type": "string"
+                    },
                     "description": {
                       "type": "string"
                     },
@@ -7750,6 +7835,9 @@
                       "type": "string"
                     },
                     "is_hidden": {
+                      "type": "string"
+                    },
+                    "key": {
                       "type": "string"
                     },
                     "last_opened_time_date": {
