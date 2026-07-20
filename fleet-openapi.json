@@ -2,14 +2,14 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Fleet REST API",
-    "version": "4.86.2",
+    "version": "4.88.1",
     "description": "REST API for Fleet device management platform. Paths and schemas are inferred from live API responses and accumulated (union/widen) across instances over time; `version` reflects the live Fleet build (see `x-fleet-revision`/`x-fleet-build-date`). See README.",
     "contact": {
       "name": "Fleet",
       "url": "https://fleetdm.com"
     },
-    "x-fleet-revision": "4e5054a373e25a600d2c668e7fea3e48960f31e7",
-    "x-fleet-build-date": "2026-06-12"
+    "x-fleet-revision": "a167b3e926e45f7e7358aa91d56aad3368ce8580",
+    "x-fleet-build-date": "2026-07-10"
   },
   "servers": [
     {
@@ -805,6 +805,9 @@
               "apple_bm_terms_expired": {
                 "type": "boolean"
               },
+              "apple_business": {
+                "type": "array"
+              },
               "apple_business_manager": {
                 "type": "array"
               },
@@ -1096,6 +1099,12 @@
               },
               "windows_enabled_and_configured": {
                 "type": "boolean"
+              },
+              "windows_entra_client_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               },
               "windows_entra_tenant_ids": {
                 "type": "array",
@@ -1515,6 +1524,9 @@
                 "conditional_access_enabled": {
                   "type": "boolean"
                 },
+                "continuous_automations_enabled": {
+                  "type": "boolean"
+                },
                 "created_at": {
                   "type": "string",
                   "format": "date-time"
@@ -1609,6 +1621,9 @@
                   "type": "boolean"
                 },
                 "conditional_access_enabled": {
+                  "type": "boolean"
+                },
+                "continuous_automations_enabled": {
                   "type": "boolean"
                 },
                 "created_at": {
@@ -2021,13 +2036,19 @@
                         ]
                       },
                       "enable_create_local_admin_account": {
-                        "type": "null"
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
                       },
                       "enable_end_user_authentication": {
                         "type": "boolean"
                       },
                       "end_user_local_account_type": {
-                        "type": "null"
+                        "type": [
+                          "null",
+                          "string"
+                        ]
                       },
                       "lock_end_user_info": {
                         "type": "boolean"
@@ -2517,13 +2538,19 @@
                         "type": "boolean"
                       },
                       "enable_managed_local_account": {
-                        "type": "null"
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
                       },
                       "enable_release_device_manually": {
                         "type": "boolean"
                       },
                       "end_user_local_account_type": {
-                        "type": "null"
+                        "type": [
+                          "null",
+                          "string"
+                        ]
                       },
                       "lock_end_user_info": {
                         "type": "boolean"
@@ -4034,6 +4061,9 @@
                     "command_uuid": {
                       "type": "string"
                     },
+                    "from_auto_update": {
+                      "type": "boolean"
+                    },
                     "from_setup_experience": {
                       "type": "boolean"
                     },
@@ -4042,6 +4072,9 @@
                     },
                     "host_id": {
                       "type": "integer"
+                    },
+                    "host_platform": {
+                      "type": "string"
                     },
                     "install_uuid": {
                       "type": "string"
@@ -4100,7 +4133,6 @@
               },
               "required": [
                 "actor_email",
-                "actor_full_name",
                 "created_at",
                 "details",
                 "fleet_initiated",
@@ -4831,6 +4863,9 @@
                     "cpu_percent": {
                       "type": "string"
                     },
+                    "data": {
+                      "type": "string"
+                    },
                     "description": {
                       "type": "string"
                     },
@@ -4856,6 +4891,9 @@
                       "type": "string"
                     },
                     "is_hidden": {
+                      "type": "string"
+                    },
+                    "key": {
                       "type": "string"
                     },
                     "last_opened_time_date": {
@@ -5083,8 +5121,7 @@
                   },
                   "required": [
                     "idp_info_updated_at",
-                    "idp_username",
-                    "other_emails"
+                    "idp_username"
                   ]
                 }
               },
@@ -5262,6 +5299,9 @@
                       "disk_encryption"
                     ]
                   },
+                  "clear_passcode_allowed": {
+                    "type": "boolean"
+                  },
                   "connected_to_fleet": {
                     "type": "boolean"
                   },
@@ -5279,6 +5319,9 @@
                   },
                   "enrollment_status": {
                     "type": "string"
+                  },
+                  "lock_allowed": {
+                    "type": "boolean"
                   },
                   "macos_settings": {
                     "type": "object",
@@ -5465,6 +5508,9 @@
                       "bootstrap_package_status",
                       "detail"
                     ]
+                  },
+                  "wipe_allowed": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -5723,6 +5769,9 @@
                       "type": "boolean"
                     },
                     "conditional_access_enabled": {
+                      "type": "boolean"
+                    },
+                    "continuous_automations_enabled": {
                       "type": "boolean"
                     },
                     "created_at": {
@@ -6218,7 +6267,53 @@
               "type": "object",
               "properties": {
                 "app_store_app": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "object"
+                  ],
+                  "properties": {
+                    "app_store_id": {
+                      "type": "string"
+                    },
+                    "automatic_install_policies": {
+                      "type": "null"
+                    },
+                    "last_install": {
+                      "type": "object",
+                      "properties": {
+                        "command_uuid": {
+                          "type": "string"
+                        },
+                        "installed_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "command_uuid",
+                        "installed_at"
+                      ]
+                    },
+                    "last_uninstall": {
+                      "type": "null"
+                    },
+                    "package_url": {
+                      "type": "null"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "self_service": {
+                      "type": "boolean"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "bundle_identifier": {
+                  "type": "string"
                 },
                 "display_name": {
                   "type": "string"
@@ -6315,7 +6410,10 @@
                   "type": "string"
                 },
                 "status": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 },
                 "upgrade_code": {
                   "type": "string"
@@ -6406,7 +6504,10 @@
                   "type": "integer"
                 },
                 "fleet_desktop_version": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 },
                 "fleet_id": {
                   "type": [
@@ -6516,7 +6617,10 @@
                   "type": "integer"
                 },
                 "orbit_version": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "string"
+                  ]
                 },
                 "os_version": {
                   "type": "string"
@@ -7082,6 +7186,12 @@
               },
               "host_count": {
                 "type": "integer"
+              },
+              "host_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
               },
               "id": {
                 "type": "integer"
@@ -7725,6 +7835,9 @@
                     "cpu_percent": {
                       "type": "string"
                     },
+                    "data": {
+                      "type": "string"
+                    },
                     "description": {
                       "type": "string"
                     },
@@ -7750,6 +7863,9 @@
                       "type": "string"
                     },
                     "is_hidden": {
+                      "type": "string"
+                    },
+                    "key": {
                       "type": "string"
                     },
                     "last_opened_time_date": {
@@ -9694,7 +9810,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "What to order results by. Can be any field listed in the results array example below. Default is updated_at."
+            "description": "What to order results by. Allowed values: host_uuid, command_uuid, status, updated_at, request_type, hostname. Default is updated_at."
           },
           {
             "name": "page",
@@ -9703,7 +9819,7 @@
             "schema": {
               "type": "integer"
             },
-            "description": "Page number of the results to fetch."
+            "description": "Page number of the results to fetch. Maximum is 100."
           },
           {
             "name": "per_page",
@@ -9712,7 +9828,7 @@
             "schema": {
               "type": "integer"
             },
-            "description": "Results per page. Default is 10."
+            "description": "Results per page. Default is 10. Maximum is 1,000 records."
           },
           {
             "name": "request_type",
@@ -10062,6 +10178,15 @@
             "description": "Results per page."
           },
           {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters policies by targeted platform. Accepts \"darwin\", \"windows\", \"linux\", or \"chrome\". Policies that target all platforms (empty platform field) are always included."
+          },
+          {
             "name": "query",
             "in": "query",
             "required": false,
@@ -10310,7 +10435,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
+            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
           },
           {
             "name": "mdm_id",
@@ -11426,7 +11551,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
+            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
           },
           {
             "name": "mdm_id",
@@ -11894,7 +12019,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
+            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
           },
           {
             "name": "mdm_id",
@@ -12128,7 +12253,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "What to order results by. Can be any field listed in the results array example below. Default is updated_at."
+            "description": "What to order results by. Allowed values: host_uuid, command_uuid, status, updated_at, request_type, hostname. Default is updated_at."
           },
           {
             "name": "page",
@@ -12137,7 +12262,7 @@
             "schema": {
               "type": "integer"
             },
-            "description": "Page number of the results to fetch."
+            "description": "Page number of the results to fetch. Maximum is 100."
           },
           {
             "name": "per_page",
@@ -12146,7 +12271,7 @@
             "schema": {
               "type": "integer"
             },
-            "description": "Results per page. Default is 10."
+            "description": "Results per page. Default is 10. Maximum is 1,000 records."
           },
           {
             "name": "request_type",
@@ -12337,6 +12462,15 @@
           }
         },
         "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters policies by targeted platform. Accepts \"darwin\", \"windows\", \"linux\", or \"chrome\". Policies that target all platforms (empty platform field) are always included."
+          },
           {
             "name": "query",
             "in": "query",
