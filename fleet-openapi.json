@@ -2,14 +2,14 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Fleet REST API",
-    "version": "4.88.1",
+    "version": "4.90.2",
     "description": "REST API for Fleet device management platform. Paths and schemas are inferred from live API responses and accumulated (union/widen) across instances over time; `version` reflects the live Fleet build (see `x-fleet-revision`/`x-fleet-build-date`). See README.",
     "contact": {
       "name": "Fleet",
       "url": "https://fleetdm.com"
     },
-    "x-fleet-revision": "a167b3e926e45f7e7358aa91d56aad3368ce8580",
-    "x-fleet-build-date": "2026-07-10"
+    "x-fleet-revision": "5f2e5352bcfeb52c30d79b8d7beeb09db3dedc09",
+    "x-fleet-build-date": "2026-09-01"
   },
   "servers": [
     {
@@ -633,7 +633,6 @@
             "required": [
               "device_count",
               "expiration",
-              "managed_cloud",
               "note",
               "organization",
               "tier"
@@ -797,6 +796,25 @@
                   "certificates",
                   "configuration_profiles",
                   "custom_settings"
+                ]
+              },
+              "apple_account_provisioning": {
+                "type": "object",
+                "properties": {
+                  "oauth_idp_client_id": {
+                    "type": "null"
+                  },
+                  "oauth_idp_client_secret": {
+                    "type": "null"
+                  },
+                  "oauth_idp_token_url": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "oauth_idp_client_id",
+                  "oauth_idp_client_secret",
+                  "oauth_idp_token_url"
                 ]
               },
               "apple_bm_enabled_and_configured": {
@@ -1026,6 +1044,9 @@
                   "minimum_version",
                   "update_new_hosts"
                 ]
+              },
+              "name_template": {
+                "type": "null"
               },
               "setup_experience": {
                 "type": "object",
@@ -1474,7 +1495,35 @@
             "type": "integer"
           },
           "custom_variables": {
-            "type": "null"
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "created_at",
+                "id",
+                "name",
+                "updated_at"
+              ]
+            }
           },
           "meta": {
             "type": "object",
@@ -1657,6 +1706,9 @@
                     },
                     "name": {
                       "type": "string"
+                    },
+                    "software_installer_id": {
+                      "type": "integer"
                     },
                     "software_title_id": {
                       "type": "integer"
@@ -2022,6 +2074,9 @@
                       "minimum_version",
                       "update_new_hosts"
                     ]
+                  },
+                  "name_template": {
+                    "type": "string"
                   },
                   "setup_experience": {
                     "type": "object",
@@ -2626,6 +2681,9 @@
                       "update_new_hosts"
                     ]
                   },
+                  "name_template": {
+                    "type": "string"
+                  },
                   "windows_require_bitlocker_pin": {
                     "type": "boolean"
                   },
@@ -3125,6 +3183,9 @@
                         "minimum_version",
                         "update_new_hosts"
                       ]
+                    },
+                    "name_template": {
+                      "type": "string"
                     },
                     "setup_experience": {
                       "type": "object",
@@ -3741,6 +3802,9 @@
                         "update_new_hosts"
                       ]
                     },
+                    "name_template": {
+                      "type": "string"
+                    },
                     "windows_require_bitlocker_pin": {
                       "type": "boolean"
                     },
@@ -4056,7 +4120,10 @@
                       "type": "boolean"
                     },
                     "batch_execution_id": {
-                      "type": "null"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     },
                     "command_uuid": {
                       "type": "string"
@@ -4067,6 +4134,9 @@
                     "from_setup_experience": {
                       "type": "boolean"
                     },
+                    "hash_sha256": {
+                      "type": "string"
+                    },
                     "host_display_name": {
                       "type": "string"
                     },
@@ -4076,7 +4146,13 @@
                     "host_platform": {
                       "type": "string"
                     },
+                    "host_uuid": {
+                      "type": "string"
+                    },
                     "install_uuid": {
+                      "type": "string"
+                    },
+                    "platform": {
                       "type": "string"
                     },
                     "policy_id": {
@@ -4090,6 +4166,9 @@
                         "null",
                         "string"
                       ]
+                    },
+                    "request_type": {
+                      "type": "string"
                     },
                     "script_execution_id": {
                       "type": "string"
@@ -4105,6 +4184,9 @@
                     },
                     "software_title": {
                       "type": "string"
+                    },
+                    "software_title_id": {
+                      "type": "integer"
                     },
                     "source": {
                       "type": "string"
@@ -4536,7 +4618,6 @@
               }
             },
             "required": [
-              "disk_encryption_enabled",
               "failing_critical_policies_count",
               "failing_policies_count",
               "os_version",
@@ -5285,7 +5366,10 @@
                     "type": "object",
                     "properties": {
                       "action_required": {
-                        "type": "null"
+                        "type": [
+                          "null",
+                          "string"
+                        ]
                       },
                       "disk_encryption": {
                         "type": [
@@ -5327,7 +5411,10 @@
                     "type": "object",
                     "properties": {
                       "action_required": {
-                        "type": "null"
+                        "type": [
+                          "null",
+                          "string"
+                        ]
                       },
                       "disk_encryption": {
                         "type": [
@@ -5878,6 +5965,9 @@
                 "items": {
                   "type": "object",
                   "properties": {
+                    "application_id": {
+                      "type": "string"
+                    },
                     "browser": {
                       "type": "string"
                     },
@@ -8692,6 +8782,9 @@
               "name": {
                 "type": "string"
               },
+              "packages": {
+                "type": "null"
+              },
               "software_package": {
                 "type": [
                   "null",
@@ -8923,6 +9016,9 @@
                 },
                 "name": {
                   "type": "string"
+                },
+                "packages": {
+                  "type": "null"
                 },
                 "software_package": {
                   "type": "null"
@@ -9702,7 +9798,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "What to order results by. Can be any column in the activities table."
+            "description": "What to order results by. Allowed fields are id, created_at, user_id, activity_type, user_name, user_email, fleet_initiated, and streamed."
           },
           {
             "name": "page",
@@ -10588,7 +10684,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "If false (or omitted), omits installed software details for each host. If \"without_vulnerability_details\", include a list of installed software for each host, including which CVEs apply to the installed software versions. true adds vulnerability description, CVSS score, and other details when using Fleet Premium. See notes below on performance."
+            "description": "If false (or omitted), omits installed software details for each host. If \"without_vulnerability_details\", include a list of installed software for each host, including which CVEs apply to the installed software versions. true adds vulnerability description, CVSS score, and other details when using Fleet Premium. See notes above on performance."
           },
           {
             "name": "populate_users",
@@ -10660,7 +10756,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
+            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia', 'missing' or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment."
           },
           {
             "name": "vulnerability",
@@ -10786,7 +10882,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "What to order results by. Allowed fields are id, created_at, and activity_type."
+            "description": "What to order results by. Allowed fields are id, created_at, user_id, activity_type, user_name, user_email, and fleet_initiated."
           },
           {
             "name": "page",
@@ -11695,7 +11791,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
+            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia', 'missing' or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment."
           },
           {
             "name": "vulnerability",
@@ -12109,7 +12205,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
+            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia', 'missing' or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment."
           }
         ]
       }
@@ -13162,7 +13258,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "_Available in Fleet Premium_. If true only vulnerability name is included in response. If false (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium. See notes below on performance."
+            "description": "_Available in Fleet Premium_. If true only vulnerability name is included in response. If false (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium. See note above on performance."
           }
         ]
       }
