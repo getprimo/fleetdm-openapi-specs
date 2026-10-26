@@ -2,14 +2,14 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Fleet REST API",
-    "version": "4.88.1",
+    "version": "4.93.1",
     "description": "REST API for Fleet device management platform. Paths and schemas are inferred from live API responses and accumulated (union/widen) across instances over time; `version` reflects the live Fleet build (see `x-fleet-revision`/`x-fleet-build-date`). See README.",
     "contact": {
       "name": "Fleet",
       "url": "https://fleetdm.com"
     },
-    "x-fleet-revision": "a167b3e926e45f7e7358aa91d56aad3368ce8580",
-    "x-fleet-build-date": "2026-07-10"
+    "x-fleet-revision": "da9d108664aef52c409709bed8bf17b4d3b3a527",
+    "x-fleet-build-date": "2026-10-20"
   },
   "servers": [
     {
@@ -83,6 +83,12 @@
                         "string"
                       ]
                     },
+                    "client_id": {
+                      "type": "string"
+                    },
+                    "command_uuid": {
+                      "type": "string"
+                    },
                     "deadline_days": {
                       "type": "integer"
                     },
@@ -104,8 +110,14 @@
                     "from_setup_experience": {
                       "type": "boolean"
                     },
+                    "global": {
+                      "type": "boolean"
+                    },
                     "grace_period_days": {
                       "type": "integer"
+                    },
+                    "hash_sha256": {
+                      "type": "string"
                     },
                     "host_count": {
                       "type": "integer"
@@ -134,7 +146,13 @@
                         "type": "integer"
                       }
                     },
+                    "host_platform": {
+                      "type": "string"
+                    },
                     "host_serial": {
+                      "type": "string"
+                    },
+                    "host_uuid": {
                       "type": "string"
                     },
                     "identifier": {
@@ -144,6 +162,9 @@
                       "type": "string"
                     },
                     "installed_from_dep": {
+                      "type": "boolean"
+                    },
+                    "jit": {
                       "type": "boolean"
                     },
                     "label_id": {
@@ -191,6 +212,12 @@
                     "mdm_platform": {
                       "type": "string"
                     },
+                    "patch_when_closed": {
+                      "type": "boolean"
+                    },
+                    "pinned_version": {
+                      "type": "null"
+                    },
                     "platform": {
                       "type": "string"
                     },
@@ -218,7 +245,22 @@
                     "query": {
                       "type": "string"
                     },
+                    "query_id": {
+                      "type": "integer"
+                    },
+                    "query_name": {
+                      "type": "string"
+                    },
                     "query_sql": {
+                      "type": "string"
+                    },
+                    "report_id": {
+                      "type": "integer"
+                    },
+                    "report_name": {
+                      "type": "string"
+                    },
+                    "request_type": {
                       "type": "string"
                     },
                     "role": {
@@ -271,6 +313,9 @@
                         "null",
                         "string"
                       ]
+                    },
+                    "tenant_id": {
+                      "type": "string"
                     },
                     "triggered_by": {
                       "type": "string"
@@ -507,6 +552,9 @@
               "alternative_browser_host": {
                 "type": "string"
               },
+              "sso_enabled": {
+                "type": "boolean"
+              },
               "transparency_url": {
                 "type": "string"
               }
@@ -569,6 +617,15 @@
           "integrations": {
             "type": "object",
             "properties": {
+              "certificates_disable_host_end_user_binding": {
+                "type": "null"
+              },
+              "certificates_idp_client_ids": {
+                "type": "null"
+              },
+              "certificates_idp_introspection_urls": {
+                "type": "null"
+              },
               "conditional_access_enabled": {
                 "type": [
                   "boolean",
@@ -633,7 +690,6 @@
             "required": [
               "device_count",
               "expiration",
-              "managed_cloud",
               "note",
               "organization",
               "tier"
@@ -774,6 +830,9 @@
               "status"
             ]
           },
+          "max_software_package_size": {
+            "type": "integer"
+          },
           "mdm": {
             "type": "object",
             "properties": {
@@ -797,6 +856,25 @@
                   "certificates",
                   "configuration_profiles",
                   "custom_settings"
+                ]
+              },
+              "apple_account_provisioning": {
+                "type": "object",
+                "properties": {
+                  "oauth_idp_client_id": {
+                    "type": "null"
+                  },
+                  "oauth_idp_client_secret": {
+                    "type": "null"
+                  },
+                  "oauth_idp_token_url": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "oauth_idp_client_id",
+                  "oauth_idp_client_secret",
+                  "oauth_idp_token_url"
                 ]
               },
               "apple_bm_enabled_and_configured": {
@@ -825,6 +903,12 @@
                       "array",
                       "null"
                     ]
+                  },
+                  "enable_disk_encryption": {
+                    "type": "boolean"
+                  },
+                  "enable_escrow_disk_encryption_key": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -876,6 +960,9 @@
                   "deadline": {
                     "type": "string"
                   },
+                  "deadline_days": {
+                    "type": "null"
+                  },
                   "minimum_version": {
                     "type": "string"
                   },
@@ -895,6 +982,9 @@
                   "deadline": {
                     "type": "string"
                   },
+                  "deadline_days": {
+                    "type": "null"
+                  },
                   "minimum_version": {
                     "type": "string"
                   },
@@ -906,6 +996,17 @@
                   "deadline",
                   "minimum_version",
                   "update_new_hosts"
+                ]
+              },
+              "linux_settings": {
+                "type": "object",
+                "properties": {
+                  "enable_escrow_disk_encryption_key": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "enable_escrow_disk_encryption_key"
                 ]
               },
               "macos_migration": {
@@ -935,6 +1036,12 @@
                       "array",
                       "null"
                     ]
+                  },
+                  "enable_disk_encryption": {
+                    "type": "boolean"
+                  },
+                  "enable_escrow_disk_encryption_key": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -1014,6 +1121,9 @@
                   "deadline": {
                     "type": "string"
                   },
+                  "deadline_days": {
+                    "type": "null"
+                  },
                   "minimum_version": {
                     "type": "string"
                   },
@@ -1026,6 +1136,15 @@
                   "minimum_version",
                   "update_new_hosts"
                 ]
+              },
+              "microsoft_graph_credential_invalid": {
+                "type": "boolean"
+              },
+              "name_template": {
+                "type": "null"
+              },
+              "only_allow_apple_business_enrollment": {
+                "type": "boolean"
               },
               "setup_experience": {
                 "type": "object",
@@ -1097,6 +1216,9 @@
               "volume_purchasing_program": {
                 "type": "array"
               },
+              "windows_automatic_enrollment": {
+                "type": "null"
+              },
               "windows_enabled_and_configured": {
                 "type": "boolean"
               },
@@ -1126,6 +1248,15 @@
                   },
                   "custom_settings": {
                     "type": "array"
+                  },
+                  "enable_disk_encryption": {
+                    "type": "boolean"
+                  },
+                  "enable_managed_local_account": {
+                    "type": "boolean"
+                  },
+                  "require_bitlocker_pin": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -1474,7 +1605,35 @@
             "type": "integer"
           },
           "custom_variables": {
-            "type": "null"
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "created_at",
+                "id",
+                "name",
+                "updated_at"
+              ]
+            }
           },
           "meta": {
             "type": "object",
@@ -1553,8 +1712,14 @@
                 "name": {
                   "type": "string"
                 },
+                "notify_before_patching": {
+                  "type": "boolean"
+                },
                 "passing_host_count": {
                   "type": "integer"
+                },
+                "patch_when_closed": {
+                  "type": "boolean"
                 },
                 "platform": {
                   "type": "string"
@@ -1658,6 +1823,12 @@
                     "name": {
                       "type": "string"
                     },
+                    "software_installer_id": {
+                      "type": "integer"
+                    },
+                    "software_package_id": {
+                      "type": "integer"
+                    },
                     "software_title_id": {
                       "type": "integer"
                     }
@@ -1689,8 +1860,14 @@
                 "name": {
                   "type": "string"
                 },
+                "notify_before_patching": {
+                  "type": "boolean"
+                },
                 "passing_host_count": {
                   "type": "integer"
+                },
+                "patch_when_closed": {
+                  "type": "boolean"
                 },
                 "platform": {
                   "type": "string"
@@ -1936,6 +2113,12 @@
                           "array",
                           "null"
                         ]
+                      },
+                      "enable_disk_encryption": {
+                        "type": "boolean"
+                      },
+                      "enable_escrow_disk_encryption_key": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -1956,6 +2139,9 @@
                           "null",
                           "string"
                         ]
+                      },
+                      "deadline_days": {
+                        "type": "null"
                       },
                       "minimum_version": {
                         "type": [
@@ -1982,6 +2168,9 @@
                           "string"
                         ]
                       },
+                      "deadline_days": {
+                        "type": "null"
+                      },
                       "minimum_version": {
                         "type": [
                           "null",
@@ -1998,6 +2187,17 @@
                       "update_new_hosts"
                     ]
                   },
+                  "linux_settings": {
+                    "type": "object",
+                    "properties": {
+                      "enable_escrow_disk_encryption_key": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "enable_escrow_disk_encryption_key"
+                    ]
+                  },
                   "macos_updates": {
                     "type": "object",
                     "properties": {
@@ -2006,6 +2206,9 @@
                           "null",
                           "string"
                         ]
+                      },
+                      "deadline_days": {
+                        "type": "null"
                       },
                       "minimum_version": {
                         "type": [
@@ -2022,6 +2225,9 @@
                       "minimum_version",
                       "update_new_hosts"
                     ]
+                  },
+                  "name_template": {
+                    "type": "string"
                   },
                   "setup_experience": {
                     "type": "object",
@@ -2107,6 +2313,15 @@
                     "properties": {
                       "configuration_profiles": {
                         "type": "null"
+                      },
+                      "enable_disk_encryption": {
+                        "type": "boolean"
+                      },
+                      "enable_managed_local_account": {
+                        "type": "boolean"
+                      },
+                      "require_bitlocker_pin": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -2225,6 +2440,9 @@
                       "host_batch_size",
                       "policy_ids"
                     ]
+                  },
+                  "host_activities_webhook": {
+                    "type": "null"
                   },
                   "host_status_webhook": {
                     "type": [
@@ -2470,6 +2688,9 @@
                           "string"
                         ]
                       },
+                      "deadline_days": {
+                        "type": "null"
+                      },
                       "minimum_version": {
                         "type": [
                           "null",
@@ -2495,6 +2716,9 @@
                           "string"
                         ]
                       },
+                      "deadline_days": {
+                        "type": "null"
+                      },
                       "minimum_version": {
                         "type": [
                           "null",
@@ -2511,6 +2735,17 @@
                       "update_new_hosts"
                     ]
                   },
+                  "linux_settings": {
+                    "type": "object",
+                    "properties": {
+                      "enable_escrow_disk_encryption_key": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "enable_escrow_disk_encryption_key"
+                    ]
+                  },
                   "macos_settings": {
                     "type": "object",
                     "properties": {
@@ -2519,6 +2754,12 @@
                           "array",
                           "null"
                         ]
+                      },
+                      "enable_disk_encryption": {
+                        "type": "boolean"
+                      },
+                      "enable_escrow_disk_encryption_key": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -2610,6 +2851,9 @@
                           "string"
                         ]
                       },
+                      "deadline_days": {
+                        "type": "null"
+                      },
                       "minimum_version": {
                         "type": [
                           "null",
@@ -2626,6 +2870,9 @@
                       "update_new_hosts"
                     ]
                   },
+                  "name_template": {
+                    "type": "string"
+                  },
                   "windows_require_bitlocker_pin": {
                     "type": "boolean"
                   },
@@ -2634,6 +2881,15 @@
                     "properties": {
                       "custom_settings": {
                         "type": "null"
+                      },
+                      "enable_disk_encryption": {
+                        "type": "boolean"
+                      },
+                      "enable_managed_local_account": {
+                        "type": "boolean"
+                      },
+                      "require_bitlocker_pin": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -2752,6 +3008,9 @@
                       "host_batch_size",
                       "policy_ids"
                     ]
+                  },
+                  "host_activities_webhook": {
+                    "type": "null"
                   },
                   "host_status_webhook": {
                     "type": [
@@ -3036,6 +3295,12 @@
                             "array",
                             "null"
                           ]
+                        },
+                        "enable_disk_encryption": {
+                          "type": "boolean"
+                        },
+                        "enable_escrow_disk_encryption_key": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -3056,6 +3321,9 @@
                             "null",
                             "string"
                           ]
+                        },
+                        "deadline_days": {
+                          "type": "null"
                         },
                         "minimum_version": {
                           "type": [
@@ -3082,6 +3350,9 @@
                             "string"
                           ]
                         },
+                        "deadline_days": {
+                          "type": "null"
+                        },
                         "minimum_version": {
                           "type": [
                             "null",
@@ -3098,6 +3369,17 @@
                         "update_new_hosts"
                       ]
                     },
+                    "linux_settings": {
+                      "type": "object",
+                      "properties": {
+                        "enable_escrow_disk_encryption_key": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "enable_escrow_disk_encryption_key"
+                      ]
+                    },
                     "macos_updates": {
                       "type": "object",
                       "properties": {
@@ -3106,6 +3388,9 @@
                             "null",
                             "string"
                           ]
+                        },
+                        "deadline_days": {
+                          "type": "null"
                         },
                         "minimum_version": {
                           "type": [
@@ -3125,6 +3410,9 @@
                         "minimum_version",
                         "update_new_hosts"
                       ]
+                    },
+                    "name_template": {
+                      "type": "string"
                     },
                     "setup_experience": {
                       "type": "object",
@@ -3210,6 +3498,15 @@
                       "properties": {
                         "configuration_profiles": {
                           "type": "null"
+                        },
+                        "enable_disk_encryption": {
+                          "type": "boolean"
+                        },
+                        "enable_managed_local_account": {
+                          "type": "boolean"
+                        },
+                        "require_bitlocker_pin": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -3334,6 +3631,9 @@
                         "host_batch_size",
                         "policy_ids"
                       ]
+                    },
+                    "host_activities_webhook": {
+                      "type": "null"
                     },
                     "host_status_webhook": {
                       "type": [
@@ -3582,6 +3882,9 @@
                             "string"
                           ]
                         },
+                        "deadline_days": {
+                          "type": "null"
+                        },
                         "minimum_version": {
                           "type": [
                             "null",
@@ -3607,6 +3910,9 @@
                             "string"
                           ]
                         },
+                        "deadline_days": {
+                          "type": "null"
+                        },
                         "minimum_version": {
                           "type": [
                             "null",
@@ -3623,6 +3929,17 @@
                         "update_new_hosts"
                       ]
                     },
+                    "linux_settings": {
+                      "type": "object",
+                      "properties": {
+                        "enable_escrow_disk_encryption_key": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "enable_escrow_disk_encryption_key"
+                      ]
+                    },
                     "macos_settings": {
                       "type": "object",
                       "properties": {
@@ -3631,6 +3948,12 @@
                             "array",
                             "null"
                           ]
+                        },
+                        "enable_disk_encryption": {
+                          "type": "boolean"
+                        },
+                        "enable_escrow_disk_encryption_key": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -3722,6 +4045,9 @@
                             "string"
                           ]
                         },
+                        "deadline_days": {
+                          "type": "null"
+                        },
                         "minimum_version": {
                           "type": [
                             "null",
@@ -3741,6 +4067,9 @@
                         "update_new_hosts"
                       ]
                     },
+                    "name_template": {
+                      "type": "string"
+                    },
                     "windows_require_bitlocker_pin": {
                       "type": "boolean"
                     },
@@ -3749,6 +4078,15 @@
                       "properties": {
                         "custom_settings": {
                           "type": "null"
+                        },
+                        "enable_disk_encryption": {
+                          "type": "boolean"
+                        },
+                        "enable_managed_local_account": {
+                          "type": "boolean"
+                        },
+                        "require_bitlocker_pin": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -3873,6 +4211,9 @@
                         "host_batch_size",
                         "policy_ids"
                       ]
+                    },
+                    "host_activities_webhook": {
+                      "type": "null"
                     },
                     "host_status_webhook": {
                       "type": [
@@ -4061,11 +4402,17 @@
                     "command_uuid": {
                       "type": "string"
                     },
+                    "enrollment_id": {
+                      "type": "null"
+                    },
                     "from_auto_update": {
                       "type": "boolean"
                     },
                     "from_setup_experience": {
                       "type": "boolean"
+                    },
+                    "hash_sha256": {
+                      "type": "string"
                     },
                     "host_display_name": {
                       "type": "string"
@@ -4076,7 +4423,25 @@
                     "host_platform": {
                       "type": "string"
                     },
+                    "host_serial": {
+                      "type": "string"
+                    },
+                    "host_uuid": {
+                      "type": "string"
+                    },
                     "install_uuid": {
+                      "type": "string"
+                    },
+                    "installed_from_dep": {
+                      "type": "boolean"
+                    },
+                    "mdm_platform": {
+                      "type": "string"
+                    },
+                    "patch_when_closed": {
+                      "type": "boolean"
+                    },
+                    "platform": {
                       "type": "string"
                     },
                     "policy_id": {
@@ -4090,6 +4455,9 @@
                         "null",
                         "string"
                       ]
+                    },
+                    "request_type": {
+                      "type": "string"
                     },
                     "script_execution_id": {
                       "type": "string"
@@ -4105,6 +4473,9 @@
                     },
                     "software_title": {
                       "type": "string"
+                    },
+                    "software_title_id": {
+                      "type": "integer"
                     },
                     "source": {
                       "type": "string"
@@ -4536,7 +4907,6 @@
               }
             },
             "required": [
-              "disk_encryption_enabled",
               "failing_critical_policies_count",
               "failing_policies_count",
               "os_version",
@@ -4709,6 +5079,9 @@
                     "description": {
                       "type": "string"
                     },
+                    "designed_capacity": {
+                      "type": "string"
+                    },
                     "directory": {
                       "type": "string"
                     },
@@ -4733,7 +5106,13 @@
                     "is_hidden": {
                       "type": "string"
                     },
+                    "items": {
+                      "type": "string"
+                    },
                     "last_opened_time_date": {
+                      "type": "string"
+                    },
+                    "max_capacity": {
                       "type": "string"
                     },
                     "name": {
@@ -4851,6 +5230,12 @@
                     "bundle_identifier": {
                       "type": "string"
                     },
+                    "category": {
+                      "type": "string"
+                    },
+                    "confidence": {
+                      "type": "string"
+                    },
                     "config_hash": {
                       "type": "string"
                     },
@@ -4869,10 +5254,25 @@
                     "description": {
                       "type": "string"
                     },
+                    "designed_capacity": {
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    },
                     "directory": {
                       "type": "string"
                     },
+                    "endpoint": {
+                      "type": "string"
+                    },
+                    "evidence": {
+                      "type": "string"
+                    },
                     "extensions": {
+                      "type": "string"
+                    },
+                    "findings": {
                       "type": "string"
                     },
                     "gid": {
@@ -4884,6 +5284,9 @@
                     "groupname": {
                       "type": "string"
                     },
+                    "identifier": {
+                      "type": "string"
+                    },
                     "instance_id": {
                       "type": "string"
                     },
@@ -4893,13 +5296,25 @@
                     "is_hidden": {
                       "type": "string"
                     },
+                    "items": {
+                      "type": "string"
+                    },
                     "key": {
                       "type": "string"
                     },
                     "last_opened_time_date": {
                       "type": "string"
                     },
+                    "location": {
+                      "type": "string"
+                    },
+                    "max_capacity": {
+                      "type": "string"
+                    },
                     "name": {
+                      "type": "string"
+                    },
+                    "path": {
                       "type": "string"
                     },
                     "pid": {
@@ -4908,7 +5323,22 @@
                     "platform_mask": {
                       "type": "string"
                     },
+                    "port": {
+                      "type": "string"
+                    },
+                    "risk_flags": {
+                      "type": "string"
+                    },
+                    "running": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    },
                     "shell": {
+                      "type": "string"
+                    },
+                    "source": {
                       "type": "string"
                     },
                     "start_time": {
@@ -5009,6 +5439,12 @@
           "host": {
             "type": "object",
             "properties": {
+              "adb_enabled": {
+                "type": "boolean"
+              },
+              "api_level": {
+                "type": "integer"
+              },
               "batteries": {
                 "type": [
                   "array",
@@ -5029,6 +5465,9 @@
                     "health"
                   ]
                 }
+              },
+              "bootloader_version": {
+                "type": "string"
               },
               "build": {
                 "type": "string"
@@ -5064,9 +5503,15 @@
                 "type": "string",
                 "format": "date-time"
               },
+              "dep_assigned_to_fleet": {
+                "type": "boolean"
+              },
               "detail_updated_at": {
                 "type": "string",
                 "format": "date-time"
+              },
+              "device_kernel_version": {
+                "type": "string"
               },
               "disk_encryption_enabled": {
                 "type": "boolean"
@@ -5079,6 +5524,9 @@
               },
               "distributed_interval": {
                 "type": "integer"
+              },
+              "encryption_type": {
+                "type": "string"
               },
               "end_users": {
                 "type": "array",
@@ -5151,6 +5599,9 @@
               },
               "gigs_total_disk_space": {
                 "type": "number"
+              },
+              "hardware_marketing_name": {
+                "type": "string"
               },
               "hardware_model": {
                 "type": "string"
@@ -5271,12 +5722,21 @@
                   "string"
                 ]
               },
+              "last_mdm_enrollment_type": {
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
               "last_restarted_at": {
                 "type": "string",
                 "format": "date-time"
               },
               "logger_tls_period": {
                 "type": "integer"
+              },
+              "manufacturer": {
+                "type": "string"
               },
               "mdm": {
                 "type": "object",
@@ -5299,6 +5759,9 @@
                       "disk_encryption"
                     ]
                   },
+                  "bootstrap_token_escrowed": {
+                    "type": "boolean"
+                  },
                   "clear_passcode_allowed": {
                     "type": "boolean"
                   },
@@ -5319,6 +5782,9 @@
                   },
                   "enrollment_status": {
                     "type": "string"
+                  },
+                  "is_personal_enrollment": {
+                    "type": "boolean"
                   },
                   "lock_allowed": {
                     "type": "boolean"
@@ -5389,6 +5855,9 @@
                         "properties": {
                           "auto_rotate_at": {
                             "type": "null"
+                          },
+                          "detail": {
+                            "type": "string"
                           },
                           "password_available": {
                             "type": "boolean"
@@ -5540,6 +6009,12 @@
                   "null",
                   "string"
                 ]
+              },
+              "os_update_deadline": {
+                "type": "null"
+              },
+              "os_update_minimum_version": {
+                "type": "null"
               },
               "os_version": {
                 "type": "string"
@@ -5739,6 +6214,9 @@
               "packs": {
                 "type": "array"
               },
+              "passcode_protected": {
+                "type": "boolean"
+              },
               "percent_disk_space_available": {
                 "type": "number"
               },
@@ -5747,6 +6225,9 @@
               },
               "platform_like": {
                 "type": "string"
+              },
+              "play_protect_enabled": {
+                "type": "boolean"
               },
               "policies": {
                 "type": "array",
@@ -5795,6 +6276,12 @@
                     },
                     "name": {
                       "type": "string"
+                    },
+                    "notify_before_patching": {
+                      "type": "boolean"
+                    },
+                    "patch_when_closed": {
+                      "type": "boolean"
                     },
                     "platform": {
                       "type": "string"
@@ -5869,6 +6356,12 @@
                   "null"
                 ]
               },
+              "security_posture": {
+                "type": "string"
+              },
+              "security_update_version": {
+                "type": "string"
+              },
               "seen_time": {
                 "type": "string",
                 "format": "date-time"
@@ -5878,6 +6371,9 @@
                 "items": {
                   "type": "object",
                   "properties": {
+                    "application_id": {
+                      "type": "string"
+                    },
                     "browser": {
                       "type": "string"
                     },
@@ -6046,6 +6542,9 @@
                 "format": "date-time"
               },
               "status": {
+                "type": "string"
+              },
+              "system_update_status": {
                 "type": "string"
               },
               "team_id": {
@@ -6494,6 +6993,9 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "disk_encryption_enabled": {
+                  "type": "boolean"
+                },
                 "display_name": {
                   "type": "string"
                 },
@@ -6522,13 +7024,19 @@
                   ]
                 },
                 "gigs_all_disk_space": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "number"
+                  ]
                 },
                 "gigs_disk_space_available": {
                   "type": "number"
                 },
                 "gigs_total_disk_space": {
                   "type": "number"
+                },
+                "hardware_marketing_name": {
+                  "type": "string"
                 },
                 "hardware_model": {
                   "type": "string"
@@ -6575,6 +7083,12 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "last_mdm_checked_in_at": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
                 "last_restarted_at": {
                   "type": "string",
                   "format": "date-time"
@@ -6595,13 +7109,22 @@
                       "type": "boolean"
                     },
                     "enrollment_status": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "is_personal_enrollment": {
+                      "type": "boolean"
                     },
                     "name": {
                       "type": "string"
                     },
                     "server_url": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     }
                   },
                   "required": [
@@ -6918,6 +7441,9 @@
                 "gigs_total_disk_space": {
                   "type": "number"
                 },
+                "hardware_marketing_name": {
+                  "type": "string"
+                },
                 "hardware_model": {
                   "type": "string"
                 },
@@ -6963,6 +7489,12 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "last_mdm_checked_in_at": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
                 "last_restarted_at": {
                   "type": "string",
                   "format": "date-time"
@@ -6983,13 +7515,22 @@
                       "type": "boolean"
                     },
                     "enrollment_status": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "is_personal_enrollment": {
+                      "type": "boolean"
                     },
                     "name": {
                       "type": "string"
                     },
                     "server_url": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     }
                   },
                   "required": [
@@ -7620,6 +8161,14 @@
               "id": {
                 "type": "integer"
               },
+              "last_activity_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "last_login_at": {
+                "type": "string",
+                "format": "date-time"
+              },
               "mfa_enabled": {
                 "type": "boolean"
               },
@@ -7800,6 +8349,9 @@
       "ReportsByIdReportResponse": {
         "type": "object",
         "properties": {
+          "count": {
+            "type": "integer"
+          },
           "query_id": {
             "type": "integer"
           },
@@ -7863,6 +8415,9 @@
                       "type": "string"
                     },
                     "is_hidden": {
+                      "type": "string"
+                    },
+                    "items": {
                       "type": "string"
                     },
                     "key": {
@@ -8692,6 +9247,9 @@
               "name": {
                 "type": "string"
               },
+              "packages": {
+                "type": "null"
+              },
               "software_package": {
                 "type": [
                   "null",
@@ -8923,6 +9481,9 @@
                 },
                 "name": {
                   "type": "string"
+                },
+                "packages": {
+                  "type": "null"
                 },
                 "software_package": {
                   "type": "null"
@@ -9279,6 +9840,18 @@
               "id": {
                 "type": "integer"
               },
+              "last_activity_at": {
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
+              "last_login_at": {
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
               "mfa_enabled": {
                 "type": "boolean"
               },
@@ -9287,6 +9860,9 @@
               },
               "sso_enabled": {
                 "type": "boolean"
+              },
+              "status": {
+                "type": "string"
               },
               "teams": {
                 "type": "array"
@@ -9352,6 +9928,18 @@
                 "id": {
                   "type": "integer"
                 },
+                "last_activity_at": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "last_login_at": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
                 "mfa_enabled": {
                   "type": "boolean"
                 },
@@ -9377,6 +9965,9 @@
                 },
                 "sso_enabled": {
                   "type": "boolean"
+                },
+                "status": {
+                  "type": "string"
                 },
                 "teams": {
                   "type": "array"
@@ -9702,7 +10293,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "What to order results by. Can be any column in the activities table."
+            "description": "What to order results by. Allowed fields are id, created_at, user_id, activity_type, user_name, user_email, fleet_initiated, and streamed."
           },
           {
             "name": "page",
@@ -10564,6 +11155,15 @@
             "description": "Requires policy_id. Valid options are 'passing' or 'failing'."
           },
           {
+            "name": "populate_end_users",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, the response will include end user data for each host, including identity provider (IdP) details and other emails."
+          },
+          {
             "name": "populate_labels",
             "in": "query",
             "required": false,
@@ -10588,7 +11188,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "If false (or omitted), omits installed software details for each host. If \"without_vulnerability_details\", include a list of installed software for each host, including which CVEs apply to the installed software versions. true adds vulnerability description, CVSS score, and other details when using Fleet Premium. See notes below on performance."
+            "description": "If false (or omitted), omits installed software details for each host. If \"without_vulnerability_details\", include a list of installed software for each host, including which CVEs apply to the installed software versions. true adds vulnerability description, CVSS score, and other details when using Fleet Premium. See notes above on performance."
           },
           {
             "name": "populate_users",
@@ -10660,7 +11260,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
+            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia', 'missing' or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment."
           },
           {
             "name": "vulnerability",
@@ -10786,7 +11386,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "What to order results by. Allowed fields are id, created_at, and activity_type."
+            "description": "What to order results by. Allowed fields are id, created_at, user_id, activity_type, user_name, user_email, and fleet_initiated."
           },
           {
             "name": "page",
@@ -10976,6 +11576,15 @@
               "type": "integer"
             },
             "description": "Required The id of the host to get the disk encryption key for."
+          },
+          {
+            "name": "allow_serial_lookup",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Tells Fleet whether or not to fallback to serial lookup for archived encryption keys. Requires global user permission to use."
           }
         ]
       }
@@ -11338,15 +11947,6 @@
             "description": "Required. The host's ID."
           },
           {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
             "name": "available_for_install",
             "in": "query",
             "required": false,
@@ -11695,7 +12295,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
+            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia', 'missing' or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment."
           },
           {
             "name": "vulnerability",
@@ -12109,7 +12709,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
+            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia', 'missing' or 'enrolled'. 'enrolled' returns every host except those pending MDM enrollment."
           }
         ]
       }
@@ -12345,15 +12945,6 @@
           }
         },
         "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
           {
             "name": "fleet_id",
             "in": "query",
@@ -12658,7 +13249,7 @@
             "schema": {
               "type": "integer"
             },
-            "description": "Required. The ID of the desired query."
+            "description": "Required. The ID of the desired report."
           },
           {
             "name": "fleet_id",
@@ -12667,7 +13258,52 @@
             "schema": {
               "type": "integer"
             },
-            "description": "Filter the query report to only include hosts that are associated with the fleet specified"
+            "description": "Filter the report to only include hosts that are associated with the fleet specified."
+          },
+          {
+            "name": "order_direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"desc\"."
+          },
+          {
+            "name": "order_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "What to order results by. Valid options are \"last_fetched\", \"host_name\", \"host_id\", or the name of a result column. Result column values are sorted as strings, and the built-in options take precedence over a result column with the same name. Default is \"last_fetched\"."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number of the results to fetch. Only applies when per_page is set."
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Results per page. If omitted, all results are returned and meta is not included."
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search query keywords. Matches the host's display name and any result column value."
           }
         ]
       }
@@ -12823,15 +13459,6 @@
         },
         "parameters": [
           {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
             "name": "available_for_install",
             "in": "query",
             "required": false,
@@ -12839,15 +13466,6 @@
               "type": "boolean"
             },
             "description": "If true or 1, only list software that is available for install (added by the user). Default is false."
-          },
-          {
-            "name": "exclude_fleet_maintained_apps",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, Fleet maintained apps will not be included in the list of software_titles. Default is false"
           },
           {
             "name": "exploit",
@@ -13135,7 +13753,7 @@
             "schema": {
               "type": "integer"
             },
-            "description": "Results per page."
+            "description": "Results per page. If no pagination parameters are specified, defaults to 10,000."
           },
           {
             "name": "query",
@@ -13162,7 +13780,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "_Available in Fleet Premium_. If true only vulnerability name is included in response. If false (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium. See notes below on performance."
+            "description": "_Available in Fleet Premium_. If true only vulnerability name is included in response. If false (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium. See note above on performance."
           }
         ]
       }
@@ -13430,7 +14048,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "What to order results by. Allowed fields are: cve, cvss_score, epss_probability, cve_published, created_at, and host_count. Default is created_at (descending)."
+            "description": "What to order results by. Allowed fields are: cve, cvss_score, epss_probability, cve_published, created_at, and hosts_count. Default is created_at (descending)."
           },
           {
             "name": "page",
