@@ -2,14 +2,14 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Fleet REST API",
-    "version": "4.88.1",
+    "version": "4.93.2",
     "description": "REST API for Fleet device management platform. Paths and schemas are inferred from live API responses and accumulated (union/widen) across instances over time; `version` reflects the live Fleet build (see `x-fleet-revision`/`x-fleet-build-date`). See README.",
     "contact": {
       "name": "Fleet",
       "url": "https://fleetdm.com"
     },
-    "x-fleet-revision": "a167b3e926e45f7e7358aa91d56aad3368ce8580",
-    "x-fleet-build-date": "2026-07-10"
+    "x-fleet-revision": "98c9fdaf61f2c8a57b5caf766e32a19ae9ef43b2",
+    "x-fleet-build-date": "2026-10-21"
   },
   "servers": [
     {
@@ -83,6 +83,12 @@
                         "string"
                       ]
                     },
+                    "client_id": {
+                      "type": "string"
+                    },
+                    "command_uuid": {
+                      "type": "string"
+                    },
                     "deadline_days": {
                       "type": "integer"
                     },
@@ -104,8 +110,14 @@
                     "from_setup_experience": {
                       "type": "boolean"
                     },
+                    "global": {
+                      "type": "boolean"
+                    },
                     "grace_period_days": {
                       "type": "integer"
+                    },
+                    "hash_sha256": {
+                      "type": "string"
                     },
                     "host_count": {
                       "type": "integer"
@@ -134,7 +146,13 @@
                         "type": "integer"
                       }
                     },
+                    "host_platform": {
+                      "type": "string"
+                    },
                     "host_serial": {
+                      "type": "string"
+                    },
+                    "host_uuid": {
                       "type": "string"
                     },
                     "identifier": {
@@ -144,6 +162,9 @@
                       "type": "string"
                     },
                     "installed_from_dep": {
+                      "type": "boolean"
+                    },
+                    "jit": {
                       "type": "boolean"
                     },
                     "label_id": {
@@ -191,6 +212,12 @@
                     "mdm_platform": {
                       "type": "string"
                     },
+                    "patch_when_closed": {
+                      "type": "boolean"
+                    },
+                    "pinned_version": {
+                      "type": "null"
+                    },
                     "platform": {
                       "type": "string"
                     },
@@ -212,13 +239,31 @@
                     "profile_name": {
                       "type": "string"
                     },
+                    "profile_uuid": {
+                      "type": "string"
+                    },
                     "public_ip": {
                       "type": "string"
                     },
                     "query": {
                       "type": "string"
                     },
+                    "query_id": {
+                      "type": "integer"
+                    },
+                    "query_name": {
+                      "type": "string"
+                    },
                     "query_sql": {
+                      "type": "string"
+                    },
+                    "report_id": {
+                      "type": "integer"
+                    },
+                    "report_name": {
+                      "type": "string"
+                    },
+                    "request_type": {
                       "type": "string"
                     },
                     "role": {
@@ -272,6 +317,9 @@
                         "string"
                       ]
                     },
+                    "tenant_id": {
+                      "type": "string"
+                    },
                     "triggered_by": {
                       "type": "string"
                     },
@@ -282,6 +330,12 @@
                       "type": "integer"
                     },
                     "user_name": {
+                      "type": "string"
+                    },
+                    "view_pin": {
+                      "type": "boolean"
+                    },
+                    "webhook_url": {
                       "type": "string"
                     }
                   },
@@ -507,6 +561,9 @@
               "alternative_browser_host": {
                 "type": "string"
               },
+              "sso_enabled": {
+                "type": "boolean"
+              },
               "transparency_url": {
                 "type": "string"
               }
@@ -569,6 +626,15 @@
           "integrations": {
             "type": "object",
             "properties": {
+              "certificates_disable_host_end_user_binding": {
+                "type": "null"
+              },
+              "certificates_idp_client_ids": {
+                "type": "null"
+              },
+              "certificates_idp_introspection_urls": {
+                "type": "null"
+              },
               "conditional_access_enabled": {
                 "type": [
                   "boolean",
@@ -633,7 +699,6 @@
             "required": [
               "device_count",
               "expiration",
-              "managed_cloud",
               "note",
               "organization",
               "tier"
@@ -774,6 +839,9 @@
               "status"
             ]
           },
+          "max_software_package_size": {
+            "type": "integer"
+          },
           "mdm": {
             "type": "object",
             "properties": {
@@ -797,6 +865,25 @@
                   "certificates",
                   "configuration_profiles",
                   "custom_settings"
+                ]
+              },
+              "apple_account_provisioning": {
+                "type": "object",
+                "properties": {
+                  "oauth_idp_client_id": {
+                    "type": "null"
+                  },
+                  "oauth_idp_client_secret": {
+                    "type": "null"
+                  },
+                  "oauth_idp_token_url": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "oauth_idp_client_id",
+                  "oauth_idp_client_secret",
+                  "oauth_idp_token_url"
                 ]
               },
               "apple_bm_enabled_and_configured": {
@@ -825,6 +912,12 @@
                       "array",
                       "null"
                     ]
+                  },
+                  "enable_disk_encryption": {
+                    "type": "boolean"
+                  },
+                  "enable_escrow_disk_encryption_key": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -876,6 +969,9 @@
                   "deadline": {
                     "type": "string"
                   },
+                  "deadline_days": {
+                    "type": "null"
+                  },
                   "minimum_version": {
                     "type": "string"
                   },
@@ -895,6 +991,9 @@
                   "deadline": {
                     "type": "string"
                   },
+                  "deadline_days": {
+                    "type": "null"
+                  },
                   "minimum_version": {
                     "type": "string"
                   },
@@ -906,6 +1005,17 @@
                   "deadline",
                   "minimum_version",
                   "update_new_hosts"
+                ]
+              },
+              "linux_settings": {
+                "type": "object",
+                "properties": {
+                  "enable_escrow_disk_encryption_key": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "enable_escrow_disk_encryption_key"
                 ]
               },
               "macos_migration": {
@@ -935,6 +1045,12 @@
                       "array",
                       "null"
                     ]
+                  },
+                  "enable_disk_encryption": {
+                    "type": "boolean"
+                  },
+                  "enable_escrow_disk_encryption_key": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -1014,6 +1130,9 @@
                   "deadline": {
                     "type": "string"
                   },
+                  "deadline_days": {
+                    "type": "null"
+                  },
                   "minimum_version": {
                     "type": "string"
                   },
@@ -1026,6 +1145,15 @@
                   "minimum_version",
                   "update_new_hosts"
                 ]
+              },
+              "microsoft_graph_credential_invalid": {
+                "type": "boolean"
+              },
+              "name_template": {
+                "type": "null"
+              },
+              "only_allow_apple_business_enrollment": {
+                "type": "boolean"
               },
               "setup_experience": {
                 "type": "object",
@@ -1097,6 +1225,9 @@
               "volume_purchasing_program": {
                 "type": "array"
               },
+              "windows_automatic_enrollment": {
+                "type": "null"
+              },
               "windows_enabled_and_configured": {
                 "type": "boolean"
               },
@@ -1126,6 +1257,15 @@
                   },
                   "custom_settings": {
                     "type": "array"
+                  },
+                  "enable_disk_encryption": {
+                    "type": "boolean"
+                  },
+                  "enable_managed_local_account": {
+                    "type": "boolean"
+                  },
+                  "require_bitlocker_pin": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -1474,7 +1614,35 @@
             "type": "integer"
           },
           "custom_variables": {
-            "type": "null"
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "created_at",
+                "id",
+                "name",
+                "updated_at"
+              ]
+            }
           },
           "meta": {
             "type": "object",
@@ -1553,8 +1721,14 @@
                 "name": {
                   "type": "string"
                 },
+                "notify_before_patching": {
+                  "type": "boolean"
+                },
                 "passing_host_count": {
                   "type": "integer"
+                },
+                "patch_when_closed": {
+                  "type": "boolean"
                 },
                 "platform": {
                   "type": "string"
@@ -1658,6 +1832,12 @@
                     "name": {
                       "type": "string"
                     },
+                    "software_installer_id": {
+                      "type": "integer"
+                    },
+                    "software_package_id": {
+                      "type": "integer"
+                    },
                     "software_title_id": {
                       "type": "integer"
                     }
@@ -1689,8 +1869,14 @@
                 "name": {
                   "type": "string"
                 },
+                "notify_before_patching": {
+                  "type": "boolean"
+                },
                 "passing_host_count": {
                   "type": "integer"
+                },
+                "patch_when_closed": {
+                  "type": "boolean"
                 },
                 "platform": {
                   "type": "string"
@@ -1936,6 +2122,12 @@
                           "array",
                           "null"
                         ]
+                      },
+                      "enable_disk_encryption": {
+                        "type": "boolean"
+                      },
+                      "enable_escrow_disk_encryption_key": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -1956,6 +2148,9 @@
                           "null",
                           "string"
                         ]
+                      },
+                      "deadline_days": {
+                        "type": "null"
                       },
                       "minimum_version": {
                         "type": [
@@ -1982,6 +2177,9 @@
                           "string"
                         ]
                       },
+                      "deadline_days": {
+                        "type": "null"
+                      },
                       "minimum_version": {
                         "type": [
                           "null",
@@ -1998,6 +2196,17 @@
                       "update_new_hosts"
                     ]
                   },
+                  "linux_settings": {
+                    "type": "object",
+                    "properties": {
+                      "enable_escrow_disk_encryption_key": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "enable_escrow_disk_encryption_key"
+                    ]
+                  },
                   "macos_updates": {
                     "type": "object",
                     "properties": {
@@ -2006,6 +2215,9 @@
                           "null",
                           "string"
                         ]
+                      },
+                      "deadline_days": {
+                        "type": "null"
                       },
                       "minimum_version": {
                         "type": [
@@ -2022,6 +2234,9 @@
                       "minimum_version",
                       "update_new_hosts"
                     ]
+                  },
+                  "name_template": {
+                    "type": "string"
                   },
                   "setup_experience": {
                     "type": "object",
@@ -2107,6 +2322,15 @@
                     "properties": {
                       "configuration_profiles": {
                         "type": "null"
+                      },
+                      "enable_disk_encryption": {
+                        "type": "boolean"
+                      },
+                      "enable_managed_local_account": {
+                        "type": "boolean"
+                      },
+                      "require_bitlocker_pin": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -2225,6 +2449,9 @@
                       "host_batch_size",
                       "policy_ids"
                     ]
+                  },
+                  "host_activities_webhook": {
+                    "type": "null"
                   },
                   "host_status_webhook": {
                     "type": [
@@ -2470,6 +2697,9 @@
                           "string"
                         ]
                       },
+                      "deadline_days": {
+                        "type": "null"
+                      },
                       "minimum_version": {
                         "type": [
                           "null",
@@ -2495,6 +2725,9 @@
                           "string"
                         ]
                       },
+                      "deadline_days": {
+                        "type": "null"
+                      },
                       "minimum_version": {
                         "type": [
                           "null",
@@ -2511,6 +2744,17 @@
                       "update_new_hosts"
                     ]
                   },
+                  "linux_settings": {
+                    "type": "object",
+                    "properties": {
+                      "enable_escrow_disk_encryption_key": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "enable_escrow_disk_encryption_key"
+                    ]
+                  },
                   "macos_settings": {
                     "type": "object",
                     "properties": {
@@ -2519,6 +2763,12 @@
                           "array",
                           "null"
                         ]
+                      },
+                      "enable_disk_encryption": {
+                        "type": "boolean"
+                      },
+                      "enable_escrow_disk_encryption_key": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -2610,6 +2860,9 @@
                           "string"
                         ]
                       },
+                      "deadline_days": {
+                        "type": "null"
+                      },
                       "minimum_version": {
                         "type": [
                           "null",
@@ -2626,6 +2879,9 @@
                       "update_new_hosts"
                     ]
                   },
+                  "name_template": {
+                    "type": "string"
+                  },
                   "windows_require_bitlocker_pin": {
                     "type": "boolean"
                   },
@@ -2634,6 +2890,15 @@
                     "properties": {
                       "custom_settings": {
                         "type": "null"
+                      },
+                      "enable_disk_encryption": {
+                        "type": "boolean"
+                      },
+                      "enable_managed_local_account": {
+                        "type": "boolean"
+                      },
+                      "require_bitlocker_pin": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -2752,6 +3017,9 @@
                       "host_batch_size",
                       "policy_ids"
                     ]
+                  },
+                  "host_activities_webhook": {
+                    "type": "null"
                   },
                   "host_status_webhook": {
                     "type": [
@@ -3036,6 +3304,12 @@
                             "array",
                             "null"
                           ]
+                        },
+                        "enable_disk_encryption": {
+                          "type": "boolean"
+                        },
+                        "enable_escrow_disk_encryption_key": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -3056,6 +3330,9 @@
                             "null",
                             "string"
                           ]
+                        },
+                        "deadline_days": {
+                          "type": "null"
                         },
                         "minimum_version": {
                           "type": [
@@ -3082,6 +3359,9 @@
                             "string"
                           ]
                         },
+                        "deadline_days": {
+                          "type": "null"
+                        },
                         "minimum_version": {
                           "type": [
                             "null",
@@ -3098,6 +3378,17 @@
                         "update_new_hosts"
                       ]
                     },
+                    "linux_settings": {
+                      "type": "object",
+                      "properties": {
+                        "enable_escrow_disk_encryption_key": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "enable_escrow_disk_encryption_key"
+                      ]
+                    },
                     "macos_updates": {
                       "type": "object",
                       "properties": {
@@ -3106,6 +3397,9 @@
                             "null",
                             "string"
                           ]
+                        },
+                        "deadline_days": {
+                          "type": "null"
                         },
                         "minimum_version": {
                           "type": [
@@ -3125,6 +3419,9 @@
                         "minimum_version",
                         "update_new_hosts"
                       ]
+                    },
+                    "name_template": {
+                      "type": "string"
                     },
                     "setup_experience": {
                       "type": "object",
@@ -3210,6 +3507,15 @@
                       "properties": {
                         "configuration_profiles": {
                           "type": "null"
+                        },
+                        "enable_disk_encryption": {
+                          "type": "boolean"
+                        },
+                        "enable_managed_local_account": {
+                          "type": "boolean"
+                        },
+                        "require_bitlocker_pin": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -3334,6 +3640,9 @@
                         "host_batch_size",
                         "policy_ids"
                       ]
+                    },
+                    "host_activities_webhook": {
+                      "type": "null"
                     },
                     "host_status_webhook": {
                       "type": [
@@ -3582,6 +3891,9 @@
                             "string"
                           ]
                         },
+                        "deadline_days": {
+                          "type": "null"
+                        },
                         "minimum_version": {
                           "type": [
                             "null",
@@ -3607,6 +3919,9 @@
                             "string"
                           ]
                         },
+                        "deadline_days": {
+                          "type": "null"
+                        },
                         "minimum_version": {
                           "type": [
                             "null",
@@ -3623,6 +3938,17 @@
                         "update_new_hosts"
                       ]
                     },
+                    "linux_settings": {
+                      "type": "object",
+                      "properties": {
+                        "enable_escrow_disk_encryption_key": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "enable_escrow_disk_encryption_key"
+                      ]
+                    },
                     "macos_settings": {
                       "type": "object",
                       "properties": {
@@ -3631,6 +3957,12 @@
                             "array",
                             "null"
                           ]
+                        },
+                        "enable_disk_encryption": {
+                          "type": "boolean"
+                        },
+                        "enable_escrow_disk_encryption_key": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -3722,6 +4054,9 @@
                             "string"
                           ]
                         },
+                        "deadline_days": {
+                          "type": "null"
+                        },
                         "minimum_version": {
                           "type": [
                             "null",
@@ -3741,6 +4076,9 @@
                         "update_new_hosts"
                       ]
                     },
+                    "name_template": {
+                      "type": "string"
+                    },
                     "windows_require_bitlocker_pin": {
                       "type": "boolean"
                     },
@@ -3749,6 +4087,15 @@
                       "properties": {
                         "custom_settings": {
                           "type": "null"
+                        },
+                        "enable_disk_encryption": {
+                          "type": "boolean"
+                        },
+                        "enable_managed_local_account": {
+                          "type": "boolean"
+                        },
+                        "require_bitlocker_pin": {
+                          "type": "boolean"
                         }
                       },
                       "required": [
@@ -3873,6 +4220,9 @@
                         "host_batch_size",
                         "policy_ids"
                       ]
+                    },
+                    "host_activities_webhook": {
+                      "type": "null"
                     },
                     "host_status_webhook": {
                       "type": [
@@ -4061,11 +4411,17 @@
                     "command_uuid": {
                       "type": "string"
                     },
+                    "enrollment_id": {
+                      "type": "null"
+                    },
                     "from_auto_update": {
                       "type": "boolean"
                     },
                     "from_setup_experience": {
                       "type": "boolean"
+                    },
+                    "hash_sha256": {
+                      "type": "string"
                     },
                     "host_display_name": {
                       "type": "string"
@@ -4076,7 +4432,25 @@
                     "host_platform": {
                       "type": "string"
                     },
+                    "host_serial": {
+                      "type": "string"
+                    },
+                    "host_uuid": {
+                      "type": "string"
+                    },
                     "install_uuid": {
+                      "type": "string"
+                    },
+                    "installed_from_dep": {
+                      "type": "boolean"
+                    },
+                    "mdm_platform": {
+                      "type": "string"
+                    },
+                    "patch_when_closed": {
+                      "type": "boolean"
+                    },
+                    "platform": {
                       "type": "string"
                     },
                     "policy_id": {
@@ -4090,6 +4464,9 @@
                         "null",
                         "string"
                       ]
+                    },
+                    "request_type": {
+                      "type": "string"
                     },
                     "script_execution_id": {
                       "type": "string"
@@ -4105,6 +4482,9 @@
                     },
                     "software_title": {
                       "type": "string"
+                    },
+                    "software_title_id": {
+                      "type": "integer"
                     },
                     "source": {
                       "type": "string"
@@ -4536,7 +4916,6 @@
               }
             },
             "required": [
-              "disk_encryption_enabled",
               "failing_critical_policies_count",
               "failing_policies_count",
               "os_version",
@@ -4733,6 +5112,9 @@
                     "is_hidden": {
                       "type": "string"
                     },
+                    "items": {
+                      "type": "string"
+                    },
                     "last_opened_time_date": {
                       "type": "string"
                     },
@@ -4851,6 +5233,12 @@
                     "bundle_identifier": {
                       "type": "string"
                     },
+                    "category": {
+                      "type": "string"
+                    },
+                    "confidence": {
+                      "type": "string"
+                    },
                     "config_hash": {
                       "type": "string"
                     },
@@ -4869,10 +5257,25 @@
                     "description": {
                       "type": "string"
                     },
+                    "designed_capacity": {
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    },
                     "directory": {
                       "type": "string"
                     },
+                    "endpoint": {
+                      "type": "string"
+                    },
+                    "evidence": {
+                      "type": "string"
+                    },
                     "extensions": {
+                      "type": "string"
+                    },
+                    "findings": {
                       "type": "string"
                     },
                     "gid": {
@@ -4884,6 +5287,9 @@
                     "groupname": {
                       "type": "string"
                     },
+                    "identifier": {
+                      "type": "string"
+                    },
                     "instance_id": {
                       "type": "string"
                     },
@@ -4893,13 +5299,25 @@
                     "is_hidden": {
                       "type": "string"
                     },
+                    "items": {
+                      "type": "string"
+                    },
                     "key": {
                       "type": "string"
                     },
                     "last_opened_time_date": {
                       "type": "string"
                     },
+                    "location": {
+                      "type": "string"
+                    },
+                    "max_capacity": {
+                      "type": "string"
+                    },
                     "name": {
+                      "type": "string"
+                    },
+                    "path": {
                       "type": "string"
                     },
                     "pid": {
@@ -4908,7 +5326,22 @@
                     "platform_mask": {
                       "type": "string"
                     },
+                    "port": {
+                      "type": "string"
+                    },
+                    "risk_flags": {
+                      "type": "string"
+                    },
+                    "running": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    },
                     "shell": {
+                      "type": "string"
+                    },
+                    "source": {
                       "type": "string"
                     },
                     "start_time": {
@@ -5009,6 +5442,12 @@
           "host": {
             "type": "object",
             "properties": {
+              "adb_enabled": {
+                "type": "boolean"
+              },
+              "api_level": {
+                "type": "integer"
+              },
               "batteries": {
                 "type": [
                   "array",
@@ -5029,6 +5468,9 @@
                     "health"
                   ]
                 }
+              },
+              "bootloader_version": {
+                "type": "string"
               },
               "build": {
                 "type": "string"
@@ -5064,9 +5506,15 @@
                 "type": "string",
                 "format": "date-time"
               },
+              "dep_assigned_to_fleet": {
+                "type": "boolean"
+              },
               "detail_updated_at": {
                 "type": "string",
                 "format": "date-time"
+              },
+              "device_kernel_version": {
+                "type": "string"
               },
               "disk_encryption_enabled": {
                 "type": "boolean"
@@ -5079,6 +5527,9 @@
               },
               "distributed_interval": {
                 "type": "integer"
+              },
+              "encryption_type": {
+                "type": "string"
               },
               "end_users": {
                 "type": "array",
@@ -5151,6 +5602,9 @@
               },
               "gigs_total_disk_space": {
                 "type": "number"
+              },
+              "hardware_marketing_name": {
+                "type": "string"
               },
               "hardware_model": {
                 "type": "string"
@@ -5271,12 +5725,21 @@
                   "string"
                 ]
               },
+              "last_mdm_enrollment_type": {
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
               "last_restarted_at": {
                 "type": "string",
                 "format": "date-time"
               },
               "logger_tls_period": {
                 "type": "integer"
+              },
+              "manufacturer": {
+                "type": "string"
               },
               "mdm": {
                 "type": "object",
@@ -5299,6 +5762,9 @@
                       "disk_encryption"
                     ]
                   },
+                  "bootstrap_token_escrowed": {
+                    "type": "boolean"
+                  },
                   "clear_passcode_allowed": {
                     "type": "boolean"
                   },
@@ -5319,6 +5785,9 @@
                   },
                   "enrollment_status": {
                     "type": "string"
+                  },
+                  "is_personal_enrollment": {
+                    "type": "boolean"
                   },
                   "lock_allowed": {
                     "type": "boolean"
@@ -5389,6 +5858,9 @@
                         "properties": {
                           "auto_rotate_at": {
                             "type": "null"
+                          },
+                          "detail": {
+                            "type": "string"
                           },
                           "password_available": {
                             "type": "boolean"
@@ -5540,6 +6012,12 @@
                   "null",
                   "string"
                 ]
+              },
+              "os_update_deadline": {
+                "type": "null"
+              },
+              "os_update_minimum_version": {
+                "type": "null"
               },
               "os_version": {
                 "type": "string"
@@ -5739,6 +6217,9 @@
               "packs": {
                 "type": "array"
               },
+              "passcode_protected": {
+                "type": "boolean"
+              },
               "percent_disk_space_available": {
                 "type": "number"
               },
@@ -5747,6 +6228,9 @@
               },
               "platform_like": {
                 "type": "string"
+              },
+              "play_protect_enabled": {
+                "type": "boolean"
               },
               "policies": {
                 "type": "array",
@@ -5795,6 +6279,12 @@
                     },
                     "name": {
                       "type": "string"
+                    },
+                    "notify_before_patching": {
+                      "type": "boolean"
+                    },
+                    "patch_when_closed": {
+                      "type": "boolean"
                     },
                     "platform": {
                       "type": "string"
@@ -5869,6 +6359,12 @@
                   "null"
                 ]
               },
+              "security_posture": {
+                "type": "string"
+              },
+              "security_update_version": {
+                "type": "string"
+              },
               "seen_time": {
                 "type": "string",
                 "format": "date-time"
@@ -5878,6 +6374,9 @@
                 "items": {
                   "type": "object",
                   "properties": {
+                    "application_id": {
+                      "type": "string"
+                    },
                     "browser": {
                       "type": "string"
                     },
@@ -6046,6 +6545,9 @@
                 "format": "date-time"
               },
               "status": {
+                "type": "string"
+              },
+              "system_update_status": {
                 "type": "string"
               },
               "team_id": {
@@ -6404,7 +6906,78 @@
                   "type": "string"
                 },
                 "software_package": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "object"
+                  ],
+                  "properties": {
+                    "automatic_install_policies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "type"
+                        ]
+                      }
+                    },
+                    "categories": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "has_uninstall_script": {
+                      "type": "boolean"
+                    },
+                    "last_install": {
+                      "type": "null"
+                    },
+                    "last_uninstall": {
+                      "type": "object",
+                      "properties": {
+                        "script_execution_id": {
+                          "type": "string"
+                        },
+                        "uninstalled_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "script_execution_id",
+                        "uninstalled_at"
+                      ]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "package_url": {
+                      "type": "null"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "self_service": {
+                      "type": "boolean"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
                 },
                 "source": {
                   "type": "string"
@@ -6494,6 +7067,9 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "disk_encryption_enabled": {
+                  "type": "boolean"
+                },
                 "display_name": {
                   "type": "string"
                 },
@@ -6522,13 +7098,19 @@
                   ]
                 },
                 "gigs_all_disk_space": {
-                  "type": "null"
+                  "type": [
+                    "null",
+                    "number"
+                  ]
                 },
                 "gigs_disk_space_available": {
                   "type": "number"
                 },
                 "gigs_total_disk_space": {
                   "type": "number"
+                },
+                "hardware_marketing_name": {
+                  "type": "string"
                 },
                 "hardware_model": {
                   "type": "string"
@@ -6575,6 +7157,12 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "last_mdm_checked_in_at": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
                 "last_restarted_at": {
                   "type": "string",
                   "format": "date-time"
@@ -6595,13 +7183,22 @@
                       "type": "boolean"
                     },
                     "enrollment_status": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "is_personal_enrollment": {
+                      "type": "boolean"
                     },
                     "name": {
                       "type": "string"
                     },
                     "server_url": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     }
                   },
                   "required": [
@@ -6918,6 +7515,9 @@
                 "gigs_total_disk_space": {
                   "type": "number"
                 },
+                "hardware_marketing_name": {
+                  "type": "string"
+                },
                 "hardware_model": {
                   "type": "string"
                 },
@@ -6963,6 +7563,12 @@
                   "type": "string",
                   "format": "date-time"
                 },
+                "last_mdm_checked_in_at": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
                 "last_restarted_at": {
                   "type": "string",
                   "format": "date-time"
@@ -6983,13 +7589,22 @@
                       "type": "boolean"
                     },
                     "enrollment_status": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "is_personal_enrollment": {
+                      "type": "boolean"
                     },
                     "name": {
                       "type": "string"
                     },
                     "server_url": {
-                      "type": "string"
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     }
                   },
                   "required": [
@@ -7620,6 +8235,14 @@
               "id": {
                 "type": "integer"
               },
+              "last_activity_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "last_login_at": {
+                "type": "string",
+                "format": "date-time"
+              },
               "mfa_enabled": {
                 "type": "boolean"
               },
@@ -7800,6 +8423,9 @@
       "ReportsByIdReportResponse": {
         "type": "object",
         "properties": {
+          "count": {
+            "type": "integer"
+          },
           "query_id": {
             "type": "integer"
           },
@@ -7863,6 +8489,9 @@
                       "type": "string"
                     },
                     "is_hidden": {
+                      "type": "string"
+                    },
+                    "items": {
                       "type": "string"
                     },
                     "key": {
@@ -8692,6 +9321,9 @@
               "name": {
                 "type": "string"
               },
+              "packages": {
+                "type": "null"
+              },
               "software_package": {
                 "type": [
                   "null",
@@ -8923,6 +9555,9 @@
                 },
                 "name": {
                   "type": "string"
+                },
+                "packages": {
+                  "type": "null"
                 },
                 "software_package": {
                   "type": "null"
@@ -9279,6 +9914,18 @@
               "id": {
                 "type": "integer"
               },
+              "last_activity_at": {
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
+              "last_login_at": {
+                "type": [
+                  "null",
+                  "string"
+                ]
+              },
               "mfa_enabled": {
                 "type": "boolean"
               },
@@ -9287,6 +9934,9 @@
               },
               "sso_enabled": {
                 "type": "boolean"
+              },
+              "status": {
+                "type": "string"
               },
               "teams": {
                 "type": "array"
@@ -9352,6 +10002,18 @@
                 "id": {
                   "type": "integer"
                 },
+                "last_activity_at": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
+                "last_login_at": {
+                  "type": [
+                    "null",
+                    "string"
+                  ]
+                },
                 "mfa_enabled": {
                   "type": "boolean"
                 },
@@ -9377,6 +10039,9 @@
                 },
                 "sso_enabled": {
                   "type": "boolean"
+                },
+                "status": {
+                  "type": "string"
                 },
                 "teams": {
                   "type": "array"
@@ -9657,90 +10322,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "activity_type",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Indicates the activity type to filter by. See available activity types in the [Audit logs docs](https://github.com/fleetdm/fleet/blob/main/docs/Contributing/reference/audit-logs.md)."
-          },
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "end_created_at",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters to include only activities that happened before this date. If not specified, set to now."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be any column in the activities table."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page. Maximum is 10,000 records. If no pagination parameters are specified, defaults to 10,000."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include actor_full_name and actor_email."
-          },
-          {
-            "name": "start_created_at",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters to include only activities that happened after this date. If not specified, set to the earliest possible date."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/commands": {
@@ -9765,81 +10347,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "command_status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Comma-separated string of one of the following options: 'ran', 'pending', or 'failed'."
-          },
-          {
-            "name": "host_identifier",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Required. The host's hostname, uuid, or hardware_serial. Returns only commands that target the specified host. Omitting host_identifier is deprecated (see the deprecation notice below). Requests w/o it continue to work for backward compatibility but are not recommended; the underlying query is not performant at scale and may time out on large fleets. Support will be removed in Fleet 5."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed values: host_uuid, command_uuid, status, updated_at, request_type, hostname. Default is updated_at."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch. Maximum is 100."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page. Default is 10. Maximum is 1,000 records."
-          },
-          {
-            "name": "request_type",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The request type to filter commands by."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/config": {
@@ -9914,54 +10422,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed fields are name, id, and updated_at."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/fleets": {
@@ -9986,63 +10447,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be any column in the fleets table."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include name."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/fleets/{id}": {
@@ -10075,8 +10480,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The desired fleet's ID. Use 0 for \"Unassigned\" hosts."
+            }
           }
         ]
       }
@@ -10111,89 +10515,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. Defines what fleet ID to operate on"
-          },
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "automation_type",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters by automation type. Supported values are \"software\", \"scripts\", \"calendar\", \"conditional_access\", and \"other\"."
-          },
-          {
-            "name": "merge_inherited",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, will return both fleet policies and inherited (\"All fleets\") policies in the policies list, and will not return a separate inherited_policies list."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed fields are id, name, team_id, created_at, updated_at, failing_host_count, and passing_host_count."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "platform",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters policies by targeted platform. Accepts \"darwin\", \"windows\", \"linux\", or \"chrome\". Policies that target all platforms (empty platform field) are always included."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include name."
+            }
           }
         ]
       }
@@ -10255,36 +10577,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. The ID of the fleet whose host counts should be included. Defaults to all fleets."
-          },
-          {
-            "name": "low_disk_space",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Returns the count of hosts with less GB of disk space available than this value. Must be a number between 1-100."
-          },
-          {
-            "name": "platform",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Platform to filter by when counting. Defaults to all platforms."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/hosts": {
@@ -10312,364 +10605,12 @@
         },
         "parameters": [
           {
-            "name": "additional_info_filters",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "A comma-delimited list of fields to include in each host's additional object. This query is populated by the additional_queries in the features section of the configuration YAML."
-          },
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used. Note: Use page instead of after"
-          },
-          {
-            "name": "bootstrap_package",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "_Available in Fleet Premium_. Filters the hosts by the status of the MDM bootstrap package on the host. Valid options are 'installed', 'pending', or 'failed'."
-          },
-          {
-            "name": "connected_to_fleet",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "Filter hosts that are talking to this Fleet server for MDM features. In rare cases, hosts can be enrolled to one Fleet server but talk to a different Fleet server for MDM features. In this case, the value would be false. Always false for Linux hosts."
-          },
-          {
-            "name": "dep_assign_profile_response",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by DEP profile assignment status. Valid options are 'SUCCESS', 'FAILED', 'THROTTLED' or 'NOT_ACCESSIBLE'. Only Apple hosts which are, or were assigned to Fleet in ABM will be returned."
-          },
-          {
-            "name": "dep_profile_error",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, the response will only include Apple MDM hosts with DEP profile assignment errors(mdm.dep_profile_error: true)."
-          },
-          {
-            "name": "device_mapping",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "Indicates whether device_mapping should be included for each host."
-          },
-          {
-            "name": "disable_failing_policies",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, hosts will return failing policies as 0 regardless of whether there are any that failed for the host. This is meant to be used when increased performance is needed in exchange for the extra information."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters to only include hosts in the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
-          },
-          {
-            "name": "include_device_status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, the response will include lock and wipe status (mdm.device_status) and mdm.pending_action information for each host."
-          },
-          {
-            "name": "low_disk_space",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the hosts to only include hosts with less GB of disk space available than this value. Must be a number between 1-100."
-          },
-          {
-            "name": "macos_settings",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by the status of the _mobile device management_ (MDM) profiles applied to hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "macos_settings_disk_encryption",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'."
-          },
-          {
-            "name": "mdm_enrollment_status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
-          },
-          {
-            "name": "mdm_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider and URL)."
-          },
-          {
-            "name": "mdm_name",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The name of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider)."
-          },
-          {
-            "name": "munki_issue_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the _munki issue_ (a Munki-reported error or warning message) to filter hosts by (that is, filter hosts that are affected by that corresponding error or warning message)."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be any column in the hosts table."
-          },
-          {
-            "name": "os_name",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The name of the operating system to filter hosts by. os_version must also be specified with os_name. See note below for filtering Windows hosts."
-          },
-          {
-            "name": "os_settings",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by the status of the operating system settings applied to the hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "os_settings_disk_encryption",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "os_version",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The version of the operating system to filter hosts by. os_name must also be specified with os_version. See note below for filtering Windows hosts."
-          },
-          {
-            "name": "os_version_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the operating system version to filter hosts by."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
             "name": "per_page",
             "in": "query",
             "required": false,
             "schema": {
               "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "policy_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the policy to filter hosts by."
-          },
-          {
-            "name": "policy_response",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires policy_id. Valid options are 'passing' or 'failing'."
-          },
-          {
-            "name": "populate_labels",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, the response will include labels for each host."
-          },
-          {
-            "name": "populate_policies",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, the response will include policy data for each host, including Fleet-maintained policies."
-          },
-          {
-            "name": "populate_software",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "If false (or omitted), omits installed software details for each host. If \"without_vulnerability_details\", include a list of installed software for each host, including which CVEs apply to the installed software versions. true adds vulnerability description, CVSS score, and other details when using Fleet Premium. See notes below on performance."
-          },
-          {
-            "name": "populate_users",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, the response will include user data for each host."
-          },
-          {
-            "name": "profile_status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires profile_uuid. Valid options are 'verified', 'verifying', 'pending', or 'failed'."
-          },
-          {
-            "name": "profile_uuid",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires profile_status. The UUID of the profile to download."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include hostname, hardware_serial, uuid, ipv4, and end user email addresses."
-          },
-          {
-            "name": "software_status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The status of the software install to filter hosts by. One of: pending_install, failed_install, installed, pending_uninstall, failed_uninstall, pending, or failed. Mutually exclusive with software_version_id, and must be supplied if software_title_id is set."
-          },
-          {
-            "name": "software_title_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the software title to filter hosts by."
-          },
-          {
-            "name": "software_version_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the software version to filter hosts by."
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
-          },
-          {
-            "name": "vulnerability",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The cve to filter hosts by (including \"cve-\" prefix, case-insensitive)."
+            }
           }
         ]
       }
@@ -10704,26 +10645,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The host's id."
-          },
-          {
-            "name": "exclude_fleet_maintained_policies",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, will omit Fleet-maintained policies from the policies list."
-          },
-          {
-            "name": "exclude_software",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, the response will not include a list of installed software for the host."
+            }
           }
         ]
       }
@@ -10758,44 +10680,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The host's ID."
-          },
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed fields are id, created_at, and activity_type."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
+            }
           },
           {
             "name": "per_page",
@@ -10803,8 +10688,7 @@
             "required": false,
             "schema": {
               "type": "integer"
-            },
-            "description": "Results per page. Maximum is 10,000 records. If no pagination parameters are specified, defaults to 10,000."
+            }
           }
         ]
       }
@@ -10839,26 +10723,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The host's id."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
+            }
           }
         ]
       }
@@ -10893,53 +10758,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The host's id."
-          },
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Options include common_name and not_valid_after. Default is common_name"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
+            }
           }
         ]
       }
@@ -10974,8 +10793,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required The id of the host to get the disk encryption key for."
+            }
           }
         ]
       }
@@ -11010,8 +10828,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The host's id."
+            }
           }
         ]
       }
@@ -11046,8 +10863,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required The id of the host to get the details for"
+            }
           }
         ]
       }
@@ -11082,8 +10898,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required The id of the host to get the details for"
+            }
           }
         ]
       }
@@ -11118,62 +10933,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The host's ID."
-          },
-          {
-            "name": "exclude_no_results",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, exclude reports that don't save results. Default is false."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Valid options are \"name\" and \"last_fetched\". Default is \"name\"."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include name."
+            }
           }
         ]
       }
@@ -11208,8 +10968,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The ID of the desired host."
+            }
           },
           {
             "name": "report_id",
@@ -11217,8 +10976,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The ID of the desired report."
+            }
           }
         ]
       }
@@ -11253,53 +11011,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The host's id."
-          },
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be ordered by name or executed_at."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
+            }
           }
         ]
       }
@@ -11334,89 +11046,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The host's ID."
-          },
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "available_for_install",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, only list software that is available for install (added by the user). Default is false."
-          },
-          {
-            "name": "exploit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "_Available in Fleet Premium_. If true, filters to only include software with vulnerabilities that have been actively exploited in the wild (cisa_known_exploit: true). Default is false."
-          },
-          {
-            "name": "macos_applications",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, filters to only include software at the top level of the /Applications folder. This parameter applies only to macOS hosts, and is ignored for hosts on other platforms. Default is false."
-          },
-          {
-            "name": "max_cvss_score",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a CVSS version 3.x base score lower than what's specified."
-          },
-          {
-            "name": "min_cvss_score",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a CVSS version 3.x base score higher than the specified value."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Options include \"name\". Default is \"name\"."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
+            }
           },
           {
             "name": "per_page",
@@ -11424,35 +11054,7 @@
             "required": false,
             "schema": {
               "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include name."
-          },
-          {
-            "name": "self_service",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, only lists self-service software. Default is false."
-          },
-          {
-            "name": "vulnerable",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, only list software that have vulnerabilities. Default is false."
+            }
           }
         ]
       }
@@ -11479,234 +11081,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "bootstrap_package",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "_Available in Fleet Premium_. Filters the hosts by the status of the MDM bootstrap package on the host. Valid options are 'installed', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the hosts to only include hosts in the specified fleet."
-          },
-          {
-            "name": "label_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "A valid label ID. Can only be used in combination with order_key, order_direction, after, status, query and fleet_id."
-          },
-          {
-            "name": "low_disk_space",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the hosts to only include hosts with less GB of disk space available than this value. Must be a number between 1-100."
-          },
-          {
-            "name": "macos_settings",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by the status of the _mobile device management_ (MDM) profiles applied to hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "macos_settings_disk_encryption",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'."
-          },
-          {
-            "name": "mdm_enrollment_status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
-          },
-          {
-            "name": "mdm_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider and URL)."
-          },
-          {
-            "name": "mdm_name",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The name of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider)."
-          },
-          {
-            "name": "munki_issue_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the _munki issue_ (a Munki-reported error or warning message) to filter hosts by (that is, filter hosts that are affected by that corresponding error or warning message)."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be any column in the hosts table."
-          },
-          {
-            "name": "os_name",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The name of the operating system to filter hosts by. os_version must also be specified with os_name"
-          },
-          {
-            "name": "os_settings",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by the status of the operating system settings applied to the hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "os_settings_disk_encryption",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "os_version",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The version of the operating system to filter hosts by. os_name must also be specified with os_version"
-          },
-          {
-            "name": "os_version_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the operating system version to filter hosts by."
-          },
-          {
-            "name": "policy_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the policy to filter hosts by."
-          },
-          {
-            "name": "policy_response",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires policy_id. Valid options are 'passing' or 'failing'."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include hostname, hardware_serial, uuid, ipv4, and end user email addresses."
-          },
-          {
-            "name": "software_title_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the software title to filter hosts by."
-          },
-          {
-            "name": "software_version_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the software version to filter hosts by."
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
-          },
-          {
-            "name": "vulnerability",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The cve to filter hosts by (including \"cve-\" prefix, case-insensitive)."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/hosts/identifier/{identifier}": {
@@ -11739,26 +11114,7 @@
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "Required. The host's hostname, uuid, or hardware_serial."
-          },
-          {
-            "name": "exclude_fleet_maintained_policies",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, will omit Fleet-maintained policies from the policies list."
-          },
-          {
-            "name": "exclude_software",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true, the response will not include a list of installed software for the host."
+            }
           }
         ]
       }
@@ -11785,27 +11141,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filter by fleet."
-          },
-          {
-            "name": "platform",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter by platform (\"windows\" or \"darwin\")"
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/labels": {
@@ -11830,54 +11166,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "_Available in Fleet Premium._ Filters to labels belonging to the specified fleet, plus global labels. Specify \"global\" to show only globally-available labels. If omitted, Fleet returns all global labels, plus all labels for fleets to which the requestor has access."
-          },
-          {
-            "name": "include_host_counts",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "Whether or not to calculate host counts for each label. Default is true. See \"additional notes\" for more information."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be any column in the labels table."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/labels/{id}": {
@@ -11910,8 +11199,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The label's id."
+            }
           }
         ]
       }
@@ -11946,170 +11234,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The label's id."
-          },
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "bootstrap_package",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "_Available in Fleet Premium_. Filters the hosts by the status of the MDM bootstrap package on the host. Valid options are 'installed', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "disable_failing_policies",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If \"true\", hosts will return failing policies as 0 regardless of whether there are any that failed for the host. This is meant to be used when increased performance is needed in exchange for the extra information."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the hosts to only include hosts in the specified fleet."
-          },
-          {
-            "name": "low_disk_space",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the hosts to only include hosts with less GB of disk space available than this value. Must be a number between 1-100."
-          },
-          {
-            "name": "macos_settings",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by the status of the _mobile device management_ (MDM) profiles applied to hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "macos_settings_disk_encryption",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'."
-          },
-          {
-            "name": "mdm_enrollment_status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The _mobile device management_ (MDM) enrollment status to filter hosts by. Valid options are 'manual', 'manual-personal', 'automatic', 'enrolled', 'pending', or 'unenrolled'. 'pending' only includes Apple (macOS, iOS, iPadOS) hosts in Apple Business (AB) that are not yet enrolled to Fleet."
-          },
-          {
-            "name": "mdm_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "The ID of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider and URL)."
-          },
-          {
-            "name": "mdm_name",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The name of the _mobile device management_ (MDM) solution to filter hosts by (that is, filter hosts that use a specific MDM provider)."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be any column in the hosts table."
-          },
-          {
-            "name": "os_settings",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by the status of the operating system settings applied to the hosts. Valid options are 'verified', 'verifying', 'pending', or 'failed'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "os_settings_disk_encryption",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts by disk encryption status. Valid options are 'verified', 'verifying', 'action_required', 'enforcing', 'failed', or 'removing_enforcement'. Note: If this filter is used in Fleet Premium without a fleet ID filter, the results include only \"Unassigned\" hosts."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include hostname, hardware_serial, uuid, and ipv4."
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Indicates the status of the hosts to return. Can either be 'new', 'online', 'offline', 'mia' or 'missing'."
+            }
           }
         ]
       }
@@ -12136,18 +11261,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "_Available in Fleet Premium._ Filters to labels belonging to the specified fleet, plus global labels. Specify \"global\" to show only globally-available labels. If omitted, Fleet returns all global labels, plus all labels for fleets to which the requestor has access."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/macadmins": {
@@ -12172,18 +11286,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the aggregate host information to only include hosts in the specified fleet."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/mdm/apple/commands": {
@@ -12208,81 +11311,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "command_status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Comma-separated string of one of the following options: 'ran', 'pending', or 'failed'."
-          },
-          {
-            "name": "host_identifier",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Required. The host's hostname, uuid, or hardware_serial. Returns only commands that target the specified host. Omitting host_identifier is deprecated (see the deprecation notice below). Requests w/o it continue to work for backward compatibility but are not recommended; the underlying query is not performant at scale and may time out on large fleets. Support will be removed in Fleet 5."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed values: host_uuid, command_uuid, status, updated_at, request_type, hostname. Default is updated_at."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch. Maximum is 100."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page. Default is 10. Maximum is 1,000 records."
-          },
-          {
-            "name": "request_type",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The request type to filter commands by."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/me": {
@@ -12307,18 +11336,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "include_ui_settings",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If set to true, includes the columns the user hides on the Hosts page (default: false)."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/os_versions": {
@@ -12343,99 +11361,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters response data to the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
-          },
-          {
-            "name": "max_vulnerabilities",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Limits the number of vulnerabilities returned per OS version. (If omitted, returns all vulnerabilities.)"
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed fields are: hosts_count. Default is hosts_count (descending)."
-          },
-          {
-            "name": "os_name",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The name of the operating system to filter hosts by. os_version must also be specified with os_name"
-          },
-          {
-            "name": "os_version",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The version of the operating system to filter hosts by. os_name must also be specified with os_version"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page. Default is 20."
-          },
-          {
-            "name": "platform",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters the hosts to the specified platform. One of: \"darwin\" (macOS), \"windows\", \"linux\", \"chrome\", \"ios\", \"ipados\", or \"android\"."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/policies/count": {
@@ -12460,27 +11386,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "platform",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters policies by targeted platform. Accepts \"darwin\", \"windows\", \"linux\", or \"chrome\". Policies that target all platforms (empty platform field) are always included."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include name."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/reports": {
@@ -12505,90 +11411,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. The ID of the fleet for the reports to be listed. When omitted, returns global reports."
-          },
-          {
-            "name": "merge_inherited",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "_Available in Fleet Premium_. If true, will include global reports in addition to fleet-level reports when filtering by fleet_id. (If no fleet_id is provided, this parameter is ignored.)"
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be any column in the reports table."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "platform",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Return reports that are scheduled to run on this platform. One of: \"macos\", \"windows\", \"linux\" (case-insensitive). (Since reports cannot be scheduled to run on \"chrome\" hosts, it's not a valid value here)"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include name."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/reports/{id}": {
@@ -12621,8 +11444,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The id of the desired report."
+            }
           }
         ]
       }
@@ -12657,17 +11479,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The ID of the desired query."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Filter the query report to only include hosts that are associated with the fleet specified"
+            }
           }
         ]
       }
@@ -12694,63 +11506,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. The ID of the fleet to filter scripts by. If not specified, it will filter only scripts that are available for \"Unassigned\" hosts."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be ordered by id, name, created_at, or updated_at."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/scripts/{id}": {
@@ -12783,17 +11539,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The desired script's ID."
-          },
-          {
-            "name": "alt",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "If specified and set to \"media\", downloads the script's contents."
+            }
           }
         ]
       }
@@ -12820,171 +11566,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "available_for_install",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, only list software that is available for install (added by the user). Default is false."
-          },
-          {
-            "name": "exclude_fleet_maintained_apps",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, Fleet maintained apps will not be included in the list of software_titles. Default is false"
-          },
-          {
-            "name": "exploit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "_Available in Fleet Premium_. If true, filters to only include software with vulnerabilities that have been actively exploited in the wild (cisa_known_exploit: true). Default is false."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the software to only include the software installed on the hosts that are assigned to the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
-          },
-          {
-            "name": "hash_sha256",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters to only include custom software packages (uploaded installers) with the specified SHA-256 hash. fleet_id must be specified to filter by hash. This allows checking if a specific package already exists before uploading."
-          },
-          {
-            "name": "max_cvss_score",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a CVSS version 3.x base score lower than what's specified."
-          },
-          {
-            "name": "min_cvss_score",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a CVSS version 3.x base score higher than the specified value."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed fields are name and hosts_count. Default is hosts_count (descending)."
-          },
-          {
-            "name": "package_name",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters to only include custom software packages (uploaded installers) with the specified package filename. fleet_id must be specified to filter by package name. This allows checking if a specific package already exists before uploading."
-          },
-          {
-            "name": "packages_only",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "_Available in Fleet Premium_. If true or 1, only lists packages available for install (without app store apps)."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "platform",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filters software titles available for install by platforms. fleet_id must be specified to filter by platform. Options are: \"macos\" (alias of \"darwin\"), \"darwin\" \"windows\", \"linux\", \"chrome\", \"ios\", \"ipados\". To show titles from multiple platforms, separate the platforms with commas (e.g. ?platform=darwin,windows)."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include title and cve."
-          },
-          {
-            "name": "self_service",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, only lists self-service software. Default is false."
-          },
-          {
-            "name": "vulnerable",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, only list software that has detected vulnerabilities. Default is false."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/software/titles/{id}": {
@@ -13017,17 +11599,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The software title's ID."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters response data to the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
+            }
           }
         ]
       }
@@ -13054,117 +11626,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "exploit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "_Available in Fleet Premium_. If true, filters to only include software with vulnerabilities that have been actively exploited in the wild (cisa_known_exploit: true). Default is false."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the software to only include the software installed on the hosts that are assigned to the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
-          },
-          {
-            "name": "max_cvss_score",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters to only include software with vulnerabilities that have a CVSS version 3.x base score lower than what's specified."
-          },
-          {
-            "name": "min_cvss_score",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters to include only software with vulnerabilities that have a CVSS version 3.x base score higher than the specified value."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed fields are name, hosts_count, cve_published, cvss_score, epss_probability and cisa_known_exploit. Default is hosts_count (descending)."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include name, version, and cve."
-          },
-          {
-            "name": "vulnerable",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "If true or 1, only list software that has detected vulnerabilities. Default is false."
-          },
-          {
-            "name": "without_vulnerability_details",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "_Available in Fleet Premium_. If true only vulnerability name is included in response. If false (or omitted), adds vulnerability description, CVSS score, and other details available in Fleet Premium. See notes below on performance."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/software/versions/{id}": {
@@ -13197,17 +11659,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The software version's ID."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters response data to the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
+            }
           }
         ]
       }
@@ -13234,72 +11686,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters the users to only include users in the specified fleet."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Can be any column in the users table."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include name and email."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/users/{id}": {
@@ -13332,8 +11719,7 @@
             "required": true,
             "schema": {
               "type": "integer"
-            },
-            "description": "Required. The user's id."
+            }
           }
         ]
       }
@@ -13385,81 +11771,7 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "after",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The value to get results after. This needs order_key defined, as that's the column that would be used."
-          },
-          {
-            "name": "exploit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "_Available in Fleet Premium_. If true, filters to only include vulnerabilities that have been actively exploited in the wild (cisa_known_exploit: true). Otherwise, includes vulnerabilities with any cisa_known_exploit value."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters only include vulnerabilities affecting the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
-          },
-          {
-            "name": "order_direction",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Requires order_key. The direction of the order given the order key. Options include \"asc\" and \"desc\". Default is \"asc\"."
-          },
-          {
-            "name": "order_key",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "What to order results by. Allowed fields are: cve, cvss_score, epss_probability, cve_published, created_at, and host_count. Default is created_at (descending)."
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Page number of the results to fetch."
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "Results per page."
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search query keywords. Searchable fields include cve."
-          }
-        ]
+        }
       }
     },
     "/api/v1/fleet/vulnerabilities/{cve}": {
@@ -13492,17 +11804,7 @@
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "The cve to get information about (format must be CVE-YYYY-<4 or more digits>, case-insensitive)."
-          },
-          {
-            "name": "fleet_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            },
-            "description": "_Available in Fleet Premium_. Filters response data to the specified fleet. Use 0 to filter by \"Unassigned\" hosts."
+            }
           }
         ]
       }
